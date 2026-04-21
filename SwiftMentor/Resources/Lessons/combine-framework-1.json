@@ -1,0 +1,59 @@
+{
+  "id": "combine-framework-1",
+  "pathId": "combine-framework",
+  "title": "Publishers & Subscribers",
+  "description": "Understand the core building blocks of Combine — Publishers that emit values over time and Subscribers that receive them, including the lifecycle of a subscription and backpressure handling.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 30,
+  "order": 1,
+  "sections": [
+    {
+      "type": "text",
+      "content": "Combine is Apple's declarative reactive framework built around two core types: Publisher and Subscriber. A Publisher emits a sequence of values over time, and it can also emit a completion (.finished) or a failure (.failure(Error)). A Subscriber receives those values by attaching to a publisher through the subscribe(_:) method. When a subscriber subscribes, the publisher creates a Subscription object that the subscriber can use to demand values — this is Combine's backpressure mechanism. The subscriber calls subscription.request(.max(N)) to signal how many values it is ready to accept, and the publisher will not send more than demanded. This demand-based pull model prevents fast producers from overwhelming slow consumers. In practice, you rarely implement custom subscribers; instead you use the sink subscriber (which takes closures for value and completion) or the assign subscriber (which writes values to a key path on an object). Every subscription returns a AnyCancellable token — you must store it, because deallocation cancels the subscription. Forgetting to store a cancellable is the most common beginner mistake and results in silent drops of all emitted values."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "sink & assign Subscribers",
+      "starterCode": "import Foundation\n\nlet numbers = [10, 20, 30, 40, 50]\n\n// Simulate a sink subscriber that prints each value\nfunc simulateSink(values: [Int]) -> [String] {\n    <#FILL#>\n}\n\nlet results = simulateSink(values: numbers)\nprint(results.joined(separator: \", \"))",
+      "expectedOutput": "Received: 10, Received: 20, Received: 30, Received: 40, Received: 50",
+      "solution": "import Foundation\n\nlet numbers = [10, 20, 30, 40, 50]\n\nfunc simulateSink(values: [Int]) -> [String] {\n    return values.map { \"Received: \\($0)\" }\n}\n\nlet results = simulateSink(values: numbers)\nprint(results.joined(separator: \", \"))"
+    },
+    {
+      "type": "text",
+      "content": "The Subscriber protocol defines three methods that form the subscription lifecycle: receive(subscription:) is called first, giving the subscriber the Subscription object it uses to request data; receive(_ value:) is called for each emitted value and returns a Subscribers.Demand that can adjust how many more values the subscriber wants; and receive(completion:) is called exactly once when the publisher finishes or fails. The sink subscriber hides this complexity behind two closures — one for values and one for completion. The assign subscriber takes a key path and an object reference, writing each emitted value directly to a property on that object. Both return an AnyCancellable that you must retain. A common pattern in UIKit view controllers is storing cancellables in a Set<AnyCancellable> declared as a property. When the view controller deallocates, the set is released, and every subscription is automatically cancelled. In SwiftUI, you can use the .onReceive modifier to observe a publisher directly in the view body, or store cancellables in @StateObject or @ObservedObject wrappers. Understanding the demand model helps you write efficient pipelines — if your subscriber only needs one value, request .max(1) to avoid unnecessary work upstream."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Cancellable Storage (Simulated)",
+      "starterCode": "import Foundation\n\nclass CancellableStore {\n    var items: [String] = []\n\n    func store(_ item: String) {\n        <#FILL#>\n    }\n\n    func cancelAll() -> Int {\n        let count = items.count\n        items.removeAll()\n        return count\n    }\n}\n\nlet store = CancellableStore()\nstore.store(\"subscription-A\")\nstore.store(\"subscription-B\")\nprint(\"Cancelled \\(store.cancelAll()) subscriptions\")",
+      "expectedOutput": "Cancelled 2 subscriptions",
+      "solution": "import Foundation\n\nclass CancellableStore {\n    var items: [String] = []\n\n    func store(_ item: String) {\n        items.append(item)\n    }\n\n    func cancelAll() -> Int {\n        let count = items.count\n        items.removeAll()\n        return count\n    }\n}\n\nlet store = CancellableStore()\nstore.store(\"subscription-A\")\nstore.store(\"subscription-B\")\nprint(\"Cancelled \\(store.cancelAll()) subscriptions\")"
+    },
+    {
+      "type": "quiz",
+      "question": "What happens when an AnyCancellable returned by sink is deallocated?",
+      "options": [
+        "The publisher continues emitting but values are silently dropped",
+        "The subscription is cancelled and no more values are delivered",
+        "An error is thrown to the publisher",
+        "The subscriber switches to a default handler"
+      ],
+      "correctIndex": 1,
+      "explanation": "AnyCancellable cancels its subscription on deallocation. After cancellation, the publisher stops delivering values to that subscriber entirely. This is why you must store cancellables — without a strong reference, they are immediately released and the pipeline silently stops."
+    },
+    {
+      "type": "quiz",
+      "question": "How does Combine's backpressure model work?",
+      "options": [
+        "Publishers push values as fast as they can and subscribers buffer them",
+        "Subscribers request a specific number of values, and publishers respect that demand",
+        "The system automatically throttles publishers based on available memory",
+        "Backpressure is handled by the operating system scheduler"
+      ],
+      "correctIndex": 1,
+      "explanation": "Combine uses a pull-based demand model. Subscribers call subscription.request(.max(N)) to declare how many values they accept, and publishers must not send more than the outstanding demand. This prevents fast producers from overwhelming slow consumers."
+    }
+  ]
+}

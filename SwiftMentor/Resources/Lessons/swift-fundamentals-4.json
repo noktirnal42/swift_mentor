@@ -1,0 +1,33 @@
+{
+  "id": "swift-fundamentals-4",
+  "pathId": "swift-fundamentals",
+  "title": "Control Flow",
+  "description": "Master conditional statements and loops to control your program's execution flow.",
+  "difficulty": "beginner",
+  "estimatedMinutes": 40,
+  "order": 4,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Control Flow\n\nControl flow determines the order in which code executes. Swift provides several ways to control execution.\n\n### If Statements\n\n```swift\nlet temperature = 25\nif temperature > 30 {\n    print(\"Hot day!\")\n} else if temperature > 20 {\n    print(\"Nice weather\")\n} else {\n    print(\"Cold day\")\n}\n```\n\n### Switch Statements\n\nSwitch is powerful for matching multiple conditions:\n\n```swift\nlet grade = \"A\"\nswitch grade {\ncase \"A\": print(\"Excellent!\")\ncase \"B\": print(\"Good job\")\ncase \"C\": print(\"Passed\")\ndefault: print(\"Keep trying\")\n}\n```\n\n### Pattern Matching\n\n```swift\nlet point = (2, 3)\nswitch point {\ncase (0, 0): print(\"Origin\")\ncase (_, 0): print(\"On X-axis\")\ncase (0, _): print(\"On Y-axis\")\ndefault: print(\"Somewhere else\")\n}\n```"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Control Flow Demo",
+      "starterCode": "let score = 85\n\n// If-else example\nif score >= 90 {\n    print(\"Grade: A\")\n} else if score >= 80 {\n    print(\"Grade: B\")\n} else if score >= 70 {\n    print(\"Grade: C\")\n} else {\n    print(\"Grade: F\")\n}\n\n// Switch example\nlet day = \"Monday\"\nswitch day {\ncase \"Saturday\", \"Sunday\":\n    print(\"Weekend!\")\ndefault:\n    print(\"Weekday: \\(day)\")\n}",
+      "expectedOutput": "Grade: B\nWeekday: Monday",
+      "solution": "let score = 85\n\nif score >= 90 {\n    print(\"Grade: A\")\n} else if score >= 80 {\n    print(\"Grade: B\")\n} else if score >= 70 {\n    print(\"Grade: C\")\n} else {\n    print(\"Grade: F\")\n}\n\nlet day = \"Monday\"\nswitch day {\ncase \"Saturday\", \"Sunday\":\n    print(\"Weekend!\")\ndefault:\n    print(\"Weekday: \\(day)\")\n}"
+    },
+    {
+      "type": "quiz",
+      "question": "What keyword is used to handle multiple potential values in a switch statement?",
+      "options": ["case", "match", "when", "where"],
+      "correctIndex": 0,
+      "explanation": "The 'case' keyword defines patterns to match against in a switch statement."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

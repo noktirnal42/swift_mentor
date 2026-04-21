@@ -1,0 +1,38 @@
+{
+  "id": "advanced-swift-5",
+  "pathId": "advanced-swift",
+  "title": "Memory Management",
+  "description": "Understand ARC, weak references, and avoiding retain cycles in Swift.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 50,
+  "order": 5,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Memory Management in Swift\n\nSwift uses Automatic Reference Counting (ARC) to manage memory.\n\n### How ARC Works\n\n```swift\nclass Person {\n    let name: String\n    init(name: String) { self.name = name }\n    deinit { print(\"\\(name) is being deallocated\") }\n}\n\nvar person: Person? = Person(name: \"John\") // ref count = 1\nvar person2 = person // ref count = 2\nperson = nil // ref count = 1\nperson2 = nil // ref count = 0, deinit called\n```\n\n### Retain Cycles\n\n```swift\nclass Person {\n    var name: String\n    var apartment: Apartment? // Strong reference by default\n    init(name: String) { self.name = name }\n}\n\nclass Apartment {\n    var number: Int\n    var tenant: Person? // Strong reference - creates retain cycle!\n    init(number: Int) { self.number = number }\n}\n```\n\n### Breaking Retain Cycles with `weak`\n\n```swift\nclass Person {\n    var name: String\n    weak var apartment: Apartment? // weak breaks the cycle\n    init(name: String) { self.name = name }\n}\n```\n\n### When to Use `weak`\n\n- Delegate relationships\n- Parent-child references where parent can disappear\n- Closure capture lists for escaping closures"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Memory Management Demo",
+      "starterCode": "import Foundation\n\nclass Person {\n    let name: String\n    weak var partner: Person? // Use weak to break retain cycle\n    \n    init(name: String) {\n        self.name = name\n        print(\"\\(name) initialized\")\n    }\n    \n    deinit {\n        print(\"\\(name) deallocated\")\n    }\n}\n\nprint(\"Creating first person...\")\nvar person1: Person? = Person(name: \"Alice\")\n\nprint(\"\\nCreating second person and linking...\")\nvar person2: Person? = Person(name: \"Bob\")\nperson1?.partner = person2\nperson2?.partner = person1\n\nprint(\"\\nReleasing person1...\")\nperson1 = nil\n\nprint(\"\\nReleasing person2...\")\nperson2 = nil\n\nprint(\"\\nDone - both should be deallocated\")",
+      "expectedOutput": "Creating first person...\nAlice initialized\n\nCreating second person and linking...\nBob initialized\n\nReleasing person1...\nAlice deallocated\n\nReleasing person2...\nBob deallocated\n\nDone - both should be deallocated",
+      "solution": "import Foundation\n\nclass Person {\n    let name: String\n    weak var partner: Person?\n    init(name: String) { self.name = name }\n    deinit { print(\"\\(name) deallocated\") }\n}\n\nvar person1: Person? = Person(name: \"Alice\")\nvar person2: Person? = Person(name: \"Bob\")\nperson1?.partner = person2\n\nperson1 = nil // Alice should be deallocated\nperson2 = nil // Bob should be deallocated"
+    },
+    {
+      "type": "quiz",
+      "question": "When should you use 'weak' instead of strong reference?",
+      "options": [
+        "Always, for better performance",
+        "When you want automatic cleanup",
+        "When the referenced object may be deallocated while this object exists",
+        "Never, strong is always better"
+      ],
+      "correctIndex": 2,
+      "explanation": "Use 'weak' when the referenced object might be deallocated before this object, preventing retain cycles."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

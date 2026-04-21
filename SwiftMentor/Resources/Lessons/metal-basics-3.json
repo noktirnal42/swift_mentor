@@ -1,0 +1,38 @@
+{
+  "id": "metal-basics-3",
+  "pathId": "metal-basics",
+  "title": "Rendering Pipeline",
+  "description": "Understand the complete Metal rendering pipeline from vertices to pixels.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 55,
+  "order": 3,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## The Metal Rendering Pipeline\n\nMetal processes geometry through a well-defined pipeline:\n\n### Pipeline Stages\n\n1. **Input Assembler**: Reads vertex data from buffers\n2. **Vertex Shader**: Transforms vertices\n3. **Tessellation** (optional): Subdivides geometry\n4. **Rasterizer**: Converts vectors to fragments\n5. **Fragment Shader**: Calculates final pixel colors\n6. **Output Merger**: Handles depth/stencil testing\n\n### Creating a Render Pass\n\n```swift\nlet commandQueue = device.makeCommandQueue()!\nlet commandBuffer = commandQueue.makeCommandBuffer()!\n\nlet renderPassDescriptor = MTLRenderPassDescriptor()\nrenderPassDescriptor.colorAttachments[0].texture = drawable.texture\nrenderPassDescriptor.colorAttachments[0].loadAction = .clear\nrenderPassDescriptor.colorAttachments[0].storeAction = .store\nrenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(\n    red: 0.2, green: 0.3, blue: 0.4, alpha: 1.0\n)\n\nlet encoder = commandBuffer.makeRenderCommandEncoder(\n    descriptor: renderPassDescriptor\n)!\n```\n\n### Drawing Primitives\n\n```swift\nencoder.setRenderPipelineState(pipeline)\nencoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\nencoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\nencoder.endEncoding()\n```"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Metal Pipeline Demo",
+      "starterCode": "import Foundation\nimport Metal\n\nprint(\"Metal Rendering Pipeline Demo\\n\")\n\n// Check for Metal support\nguard let device = MTLCreateSystemDefaultDevice() else {\n    print(\"Metal is not supported on this device\")\n    exit(1)\n}\n\nprint(\"Device: \\(device.name)\")\nprint(\"Max threads per threadgroup: \\(device.maxThreadsPerThreadgroup)\")\n\n// Pipeline configuration\nlet pipelineCode = \"\"\"\n\\nPipeline Configuration:\n1. Create RenderPipelineDescriptor\n2. Set vertex/fragment functions\n3. Create PipelineState\n4. Create CommandQueue\n5. Create CommandBuffer\n6. Create RenderCommandEncoder\n7. Draw and finalize\n\"\"\"\n\nprint(pipelineCode)\n\n// Example vertex data structure\nstruct Vertex {\n    var position: SIMD3<Float>\n    var color: SIMD4<Float>\n}\n\nlet vertices: [Vertex] = [\n    Vertex(position: SIMD3(0, 0.5, 0), color: SIMD4(1, 0, 0, 1)),\n    Vertex(position: SIMD3(-0.5, -0.5, 0), color: SIMD4(0, 1, 0, 1)),\n    Vertex(position: SIMD3(0.5, -0.5, 0), color: SIMD4(0, 0, 1, 1))\n]\n\nprint(\"Triangle vertices: \\(vertices.count)\")\nprint(\"First vertex position: \\(vertices[0].position)\")\nprint(\"First vertex color: \\(vertices[0].color)\")",
+      "expectedOutput": "Metal Rendering Pipeline Demo\n\nDevice: Apple M2\nMax threads per threadgroup: (1024, 1024, 1024)\n\nPipeline Configuration:\n1. Create RenderPipelineDescriptor\n...\n\nTriangle vertices: 3\nFirst vertex position: (0.0, 0.5, 0.0)\nFirst vertex color: (1.0, 0.0, 0.0, 1.0)",
+      "solution": "import Foundation\nimport Metal\n\nif let device = MTLCreateSystemDefaultDevice() {\n    print(\"Metal device: \\(device.name)\")\n}"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the purpose of the Input Assembler in Metal?",
+      "options": [
+        "To compile shaders",
+        "To read vertex data from buffers and assemble primitives",
+        "To manage GPU memory",
+        "To handle command encoding"
+      ],
+      "correctIndex": 1,
+      "explanation": "The Input Assembler reads vertex and index data from buffers and assembles geometric primitives for the pipeline."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

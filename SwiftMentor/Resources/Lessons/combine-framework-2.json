@@ -1,0 +1,59 @@
+{
+  "id": "combine-framework-2",
+  "pathId": "combine-framework",
+  "title": "Operators & Transforms",
+  "description": "Master Combine's operator chain — map, filter, flatMap, combineLatest, zip, debounce, and more — to transform, filter, and combine publisher streams declaratively.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 30,
+  "order": 2,
+  "sections": [
+    {
+      "type": "text",
+      "content": "Operators are the heart of Combine's power. Each operator returns a new publisher that transforms, filters, or combines the upstream's output — you chain them declaratively to build complex data pipelines. The most fundamental operators are map (transforms each value), filter (passes only values matching a predicate), and compactMap (transforms and drops nils). For flattening nested publishers, flatMap(maxPublishers:) subscribes to each inner publisher and merges its emissions into the outer stream — crucial when one async operation triggers another. The maxPublishers parameter controls concurrency: .unlimited spawns all inner subscriptions at once, while .max(1) serializes them. combineLatest pairs the latest value from each of two publishers, emitting a tuple whenever either source emits — perfect for validating a form where both username and password fields must be non-empty. zip pairs values strictly by index, waiting for both publishers to emit their nth value before releasing the pair. Timing operators like debounce and throttle control rapid-fire streams: debounce waits for a pause of at least the specified interval since the last emission, while throttle emits the first or last value within each time window. removeDuplicates caches the previous value and drops consecutive duplicates."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Map, Filter & CompactMap (Simulated)",
+      "starterCode": "import Foundation\n\nlet rawScores: [Int?] = [85, nil, 42, 91, nil, 73]\n\n// Simulate: compactMap (drop nils), filter (>60), map (add \"Pass\")\nfunc processScores(_ scores: [Int?]) -> [String] {\n    <#FILL#>\n}\n\nlet results = processScores(rawScores)\nprint(results.joined(separator: \", \"))",
+      "expectedOutput": "85 Pass, 91 Pass, 73 Pass",
+      "solution": "import Foundation\n\nlet rawScores: [Int?] = [85, nil, 42, 91, nil, 73]\n\nfunc processScores(_ scores: [Int?]) -> [String] {\n    return scores\n        .compactMap { $0 }\n        .filter { $0 > 60 }\n        .map { \"\\($0) Pass\" }\n}\n\nlet results = processScores(rawScores)\nprint(results.joined(separator: \", \"))"
+    },
+    {
+      "type": "text",
+      "content": "Understanding flatMap is critical because it bridges two reactive worlds. Imagine a search field that triggers a network request for each keystroke — without flatMap you cannot chain the text-change publisher into the URL-request publisher. But naive flatMap with .unlimited can fire dozens of simultaneous requests if the user types quickly. The solution is flatMap(maxPublishers: .max(1)), which cancels the previous request whenever a new keystroke arrives — effectively implementing search-as-you-type with automatic cancellation. Another key pattern is combineLatest for reactive validation. If you have a username publisher and a password publisher, combineLatest emits a new tuple each time either changes, so you can map to a boolean isValid and assign it to a button's disabled state. For more than two sources, you can chain combineLatest calls or use Publishers.CombineLatest3 and CombineLatest4. The scan operator is Combine's equivalent of reduce — it accumulates a running value and emits after each upstream event, which is useful for running sums or counters. Finally, collect gathers values into an array, either until the upstream finishes or up to a count limit."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Scan & Collect (Simulated)",
+      "starterCode": "import Foundation\n\nlet deposits = [100, 250, 75, 300]\n\n// Simulate scan: running balance after each deposit\nfunc runningBalance(from amounts: [Int]) -> [Int] {\n    <#FILL#>\n}\n\nlet balances = runningBalance(from: deposits)\nprint(balances.map(String.init).joined(separator: \", \"))",
+      "expectedOutput": "100, 350, 425, 725",
+      "solution": "import Foundation\n\nlet deposits = [100, 250, 75, 300]\n\nfunc runningBalance(from amounts: [Int]) -> [Int] {\n    var running = 0\n    return amounts.map { amount in\n        running += amount\n        return running\n    }\n}\n\nlet balances = runningBalance(from: deposits)\nprint(balances.map(String.init).joined(separator: \", \"))"
+    },
+    {
+      "type": "quiz",
+      "question": "What does flatMap(maxPublishers: .max(1)) do when a new upstream value arrives while a previous inner publisher is still active?",
+      "options": [
+        "It queues the new value and processes it after the current one finishes",
+        "It cancels the previous inner publisher and starts a new one",
+        "It drops the new value entirely",
+        "It throws an error"
+      ],
+      "correctIndex": 1,
+      "explanation": "With .max(1), flatMap only allows one inner publisher at a time. When a new value arrives, it cancels the active inner publisher and subscribes to the new one. This is the standard pattern for search-as-you-type."
+    },
+    {
+      "type": "quiz",
+      "question": "Which operator emits a tuple every time either of two upstream publishers emits a new value?",
+      "options": [
+        "zip",
+        "merge",
+        "combineLatest",
+        "concat"
+      ],
+      "correctIndex": 2,
+      "explanation": "combineLatest emits a tuple of the latest values from both publishers whenever either one emits. zip waits for both to emit their next value before releasing a pair, so it is index-based rather than time-based."
+    }
+  ]
+}

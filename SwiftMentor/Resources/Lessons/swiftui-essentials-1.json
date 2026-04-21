@@ -1,0 +1,49 @@
+{
+  "id": "swiftui-essentials-1",
+  "pathId": "swiftui-essentials",
+  "title": "SwiftUI Basics",
+  "description": "Learn the fundamentals of SwiftUI - views, modifiers, and the declarative UI paradigm.",
+  "difficulty": "beginner",
+  "estimatedMinutes": 45,
+  "order": 1,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Introduction to SwiftUI\n\nSwiftUI is Apple's modern framework for building user interfaces across all Apple platforms.\n\n### Declarative vs Imperative\n\n**Imperative** (UIKit): \"Do this, then do that\"\n```swift\nlet label = UILabel()\nlabel.text = \"Hello\"\nview.addSubview(label)\n```\n\n**Declarative** (SwiftUI): \"This is what I want\"\n```swift\nText(\"Hello\")\n```\n\n### Views\n\nEverything you see is a **View**:\n- `Text(\"Hello\")` - Display text\n- `Image(systemName: \"star\")` - Display an image\n- `Button(\"Click me\") { }` - A tappable button\n- `VStack { }` - Vertical stack of views"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Your First SwiftUI View",
+      "starterCode": "import SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        VStack(spacing: 20) {\n            Image(systemName: \"star.fill\")\n                .font(.system(size: 60))\n                .foregroundColor(.yellow)\n            \n            Text(\"Welcome to SwiftUI!\")\n                .font(.title)\n                .fontWeight(.bold)\n            \n            Text(\"Building beautiful UIs is easy\")\n                .foregroundColor(.secondary)\n        }\n        .padding()\n    }\n}",
+      "viewType": "live",
+      "expectedOutput": "A centered card with a star, title, and subtitle",
+      "solution": "import SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        VStack(spacing: 20) {\n            Image(systemName: \"star.fill\")\n                .font(.system(size: 60))\n                .foregroundColor(.yellow)\n            \n            Text(\"Welcome to SwiftUI!\")\n                .font(.title)\n                .fontWeight(.bold)\n            \n            Text(\"Building beautiful UIs is easy\")\n                .foregroundColor(.secondary)\n        }\n        .padding()\n    }\n}"
+    },
+    {
+      "type": "text",
+      "content": "### Modifiers\n\nModifiers change a view's appearance or behavior:\n\n```swift\nText(\"Hello\")\n    .font(.title)           // Change font\n    .foregroundColor(.blue) // Change color\n    .padding()              // Add space\n    .background(Color.yellow) // Add background\n```\n\n### Composing Views\n\nCombine simple views to build complex interfaces:\n\n```swift\nVStack {           // Vertical stack\n    HStack {       // Horizontal stack inside\n        Text(\"Left\")\n        Text(\"Right\")\n    }\n}\n```"
+    },
+    {
+      "type": "interactive",
+      "title": "Try It: Build a Profile Card",
+      "instructions": "Create a VStack with an image, name, and description using what you learned.",
+      "validation": {
+        "type": "contains",
+        "pattern": "VStack|Text|Image"
+      }
+    },
+    {
+      "type": "quiz",
+      "question": "What does the .padding() modifier do?",
+      "options": ["Changes text size", "Adds space around a view", "Changes colors", "Creates animation"],
+      "correctIndex": 1,
+      "explanation": ".padding() adds space around a view, creating visual breathing room."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": true,
+    "projectName": "FirstSwiftUI",
+    "projectType": "swiftui-app"
+  }
+}

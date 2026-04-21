@@ -1,0 +1,54 @@
+{
+  "id": "appstore-distribution-2",
+  "pathId": "appstore-distribution",
+  "title": "Testing & Notarization",
+  "description": "Explore TestFlight beta testing, notarization for macOS apps, and the verification processes Apple uses to ensure app safety.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 40,
+  "order": 2,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## TestFlight Beta Testing\n\nTestFlight is Apple's official beta testing platform, allowing you to distribute pre-release versions of your app to testers before submitting to the App Store.\n\n### Internal vs. External Testing\n\n**Internal Testing** — Up to 100 members of your App Store Connect team can test immediately with no review required. Builds are available within minutes.\n\n**External Testing** — You can invite up to 10,000 testers using email invites or public links. External builds require a brief Beta App Review (usually 1–2 days) to ensure the app doesn't crash on launch and doesn't contain obvious issues.\n\n### TestFlight Features\n\n- **Test Information** — Provide instructions, what to test, and what's new in each build\n- **Feedback** — Testers can send screenshots and comments directly from the app\n- **Crash Reports** — Crashes are automatically collected and appear in App Store Connect\n- **Session Data** — See how often testers open your app and which screens they visit\n- **Multiple Builds** — Distribute different builds for different test groups\n\n### Build Expiration\n\nTestFlight builds expire after **90 days**. Plan your testing cycles accordingly and upload fresh builds before expiration.\n\n### Best Practices\n\n- Use internal testing for quick sanity checks before promoting to external\n- Write clear \"What to Test\" instructions for each build\n- Respond to tester feedback promptly to maintain engagement"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "TestFlight Build Info",
+      "starterCode": "let buildVersion = \"2.4.0\"\nlet buildNumber = 42\nlet maxInternalTesters = 100\nlet maxExternalTesters = 10000\nlet expirationDays = 90\n\nprint(\"Build: \\(buildVersion) (\\(buildNumber))\")\nprint(\"Internal testers: up to \\(maxInternalTesters)\")\nprint(\"External testers: up to \\(maxExternalTesters)\")\nprint(\"Build expires in: \\(expirationDays) days\")\n\nlet testingPhases = [\"Internal\", \"External\", \"Beta App Review\"]\nprint(\"\\nTesting phases:\")\nfor phase in testingPhases {\n print(\"- \\(phase)\")\n}",
+      "expectedOutput": "Build: 2.4.0 (42)\nInternal testers: up to 100\nExternal testers: up to 10000\nBuild expires in: 90 days\n\nTesting phases:\n- Internal\n- External\n- Beta App Review",
+      "solution": "let buildVersion = \"2.4.0\"\nlet buildNumber = 42\nlet maxInternalTesters = 100\nlet maxExternalTesters = 10000\nlet expirationDays = 90\n\nprint(\"Build: \\(buildVersion) (\\(buildNumber))\")\nprint(\"Internal testers: up to \\(maxInternalTesters)\")\nprint(\"External testers: up to \\(maxExternalTesters)\")\nprint(\"Build expires in: \\(expirationDays) days\")\n\nlet testingPhases = [\"Internal\", \"External\", \"Beta App Review\"]\nprint(\"\\nTesting phases:\")\nfor phase in testingPhases {\n print(\"- \\(phase)\")\n}"
+    },
+    {
+      "type": "quiz",
+      "question": "What is a key difference between internal and external TestFlight testing?",
+      "options": [
+        "Internal testing requires App Store Review",
+        "External builds require Beta App Review",
+        "Internal testing has a 10,000 tester limit",
+        "External builds do not expire"
+      ],
+      "correctIndex": 1,
+      "explanation": "External TestFlight testing requires a Beta App Review to ensure the app doesn't crash on launch and is functional, while internal testing has no review and is available immediately."
+    },
+    {
+      "type": "text",
+      "content": "## Notarization\n\n**Notarization** is Apple's security process for macOS apps distributed outside the App Store. It verifies that your app is free from malicious content and has been signed with a valid Developer ID certificate.\n\n### Why Notarization Matters\n\nStarting with macOS Catalina, Gatekeeper blocks non-notarized apps by default. Users see warnings like \"App cannot be opened because the developer cannot be verified.\" Notarization gives users confidence that Apple has scanned your app for known malware.\n\n### The Notarization Process\n\n1. **Archive** your macOS app with a Developer ID certificate\n2. **Submit** the archive to Apple's notarization service using `xcrun notarytool submit`\n3. **Wait** for Apple to scan your app (usually 1–15 minutes)\n4. **Staple** the notarization ticket to your app with `xcrun stapler staple`\n\n### Key Requirements\n\n- Apps must use the **Hardened Runtime** (`--options=runtime`)\n- All signed binaries (frameworks, dylibs, helpers) must be included\n- The app must not contain known malware\n- A valid Developer ID certificate is required\n\n### Notarization vs. App Store Review\n\nNotarization is an **automated security check** — it scans for malware and validates signing. It is not a human review like the App Store review process. Apps can pass notarization but still have bugs or poor design.\n\n### For iOS Apps\n\niOS apps distributed through the App Store go through App Store Review instead. Notarization is specifically for macOS apps distributed independently (DMG, ZIP, or web downloads)."
+    },
+    {
+      "type": "quiz",
+      "question": "What is notarization?",
+      "options": [
+        "Code signing with a development certificate",
+        "Apple verifying app safety for macOS distribution",
+        "Beta testing through TestFlight",
+        "The App Store human review process"
+      ],
+      "correctIndex": 1,
+      "explanation": "Notarization is Apple's automated process of verifying that macOS apps distributed outside the App Store are free from malicious content and properly signed with a Developer ID certificate."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

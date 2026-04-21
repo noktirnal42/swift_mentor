@@ -1,0 +1,40 @@
+{
+  "snippets": [
+    {
+      "id": "metal-vertex-shader",
+      "title": "Basic Vertex Shader",
+      "shortcut": "vertexshader",
+      "topic": "metal",
+      "description": "Basic Metal vertex shader template",
+      "code": "vertex ${1:ShaderName}VertexOut ${2:vertexShader}(\n    ${3:Vertex}In in [[stage_in]],\n    constant Uniforms &uniforms [[buffer(0)]]\n) {\n    ${1:ShaderName}VertexOut out;\n    out.clipPosition = uniforms.modelViewProjection * float4(in.position, 1.0);\n    out.fragmentColor = in.color;\n    return out;\n}",
+      "tags": ["metal", "vertex", "shader"]
+    },
+    {
+      "id": "metal-fragment-shader",
+      "title": "Basic Fragment Shader",
+      "shortcut": "fragmentshader",
+      "topic": "metal",
+      "description": "Basic Metal fragment shader template",
+      "code": "fragment ${1:ShaderName}FragmentOut ${2:fragmentShader}(\n    ${3:ShaderName}VertexOut in [[stage_in]]\n) {\n    ${1:ShaderName}FragmentOut out;\n    out.color = in.fragmentColor;\n    return out;\n}",
+      "tags": ["metal", "fragment", "shader"]
+    },
+    {
+      "id": "metal-texture",
+      "title": "Texture Loading",
+      "shortcut": "textureload",
+      "topic": "metal",
+      "description": "Load texture from file in Metal",
+      "code": "func loadTexture(name: String) -> MTLTexture? {\n    guard let url = Bundle.main.url(forResource: name, withExtension: nil),\n          let texture = try? MTKTextureLoader(device: device).newTexture(URL: url) else {\n        return nil\n    }\n    return texture\n}",
+      "tags": ["metal", "texture", "image"]
+    },
+    {
+      "id": "metal-buffer",
+      "title": "Create Buffer",
+      "shortcut": "metalbuffer",
+      "topic": "metal",
+      "description": "Create a Metal buffer",
+      "code": "let buffer = device.makeBuffer(\n    bytes: &${1:data},\n    length: MemoryLayout<${2:Type}>.stride * ${3:count},\n    options: .storageMode${4:Shared}\n)",
+      "tags": ["metal", "buffer", "memory"]
+    }
+  ]
+}

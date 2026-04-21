@@ -1,0 +1,35 @@
+{
+  "id": "metal-basics-1",
+  "pathId": "metal-basics",
+  "title": "Introduction to Metal",
+  "description": "Discover Metal - Apple's framework for GPU-accelerated graphics and compute.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 60,
+  "order": 1,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Introduction to Metal\n\nMetal provides extremely low-overhead access to the GPU, enabling you to maximize the graphics and compute potential of your app.\n\n### Why Metal?\n\n- **Performance** - Near-direct GPU access\n- **Parallelism** - Execute thousands of threads simultaneously\n- **Flexibility** - Custom rendering pipelines\n- **Compatibility** - Works across all Apple platforms\n\n### Metal vs Other Graphics APIs\n\n| Feature | Metal | OpenGL | Vulkan |\n|---------|-------|--------|--------|\n| Platform | Apple only | Cross-platform | Cross-platform |\n| Learning curve | Moderate | Steep | Very steep |\n| Performance | Excellent | Good | Excellent |\n\n### Core Metal Concepts\n\n1. **Device** - Represents the GPU\n2. **Command Queue** - Manages command buffers\n3. **Buffer** - Holds vertex/index data\n4. **Texture** - Stores image data\n5. **Shader** - GPU execution code"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Metal Setup Overview",
+      "starterCode": "// Metal setup pseudocode - actual Metal requires GPU access\n\n/*\n1. Get the GPU device\n   let device = MTLCreateSystemDefaultDevice()\n\n2. Create a command queue\n   let commandQueue = device.makeCommandQueue()\n\n3. Create a render pipeline\n   let pipelineDescriptor = MTLRenderPipelineDescriptor()\n   pipelineDescriptor.vertexFunction = ...\n   pipelineDescriptor.fragmentFunction = ...\n\n4. Render loop:\n   - Create command buffer\n   - Encode render commands\n   - Commit command buffer\n   - Present drawable\n*/\n\n// This is conceptual - Metal requires a real GPU to execute\nprint(\"Metal enables GPU-accelerated rendering\")\nprint(\"Key components: Device, CommandQueue, Pipeline, Buffers\")\nprint(\"Shaders written in Metal Shading Language (MSL)\")",
+      "expectedOutput": "Metal enables GPU-accelerated rendering\nKey components: Device, CommandQueue, Pipeline, Buffers\nShaders written in Metal Shading Language (MSL)",
+      "solution": "// Metal setup pseudocode\nprint(\"Metal enables GPU-accelerated rendering\")"
+    },
+    {
+      "type": "quiz",
+      "question": "What language are Metal shaders written in?",
+      "options": ["Swift", "Metal Shading Language (MSL)", "C++", "GLSL"],
+      "correctIndex": 1,
+      "explanation": "Metal shaders are written in Metal Shading Language (MSL), which is based on C++."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": true,
+    "projectName": "MetalIntro",
+    "projectType": "metal-app"
+  }
+}

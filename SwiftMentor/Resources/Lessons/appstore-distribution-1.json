@@ -1,0 +1,54 @@
+{
+  "id": "appstore-distribution-1",
+  "pathId": "appstore-distribution",
+  "title": "Provisioning & Signing",
+  "description": "Learn how certificates, provisioning profiles, and code signing work together to prepare your app for distribution.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 40,
+  "order": 1,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Certificates & Provisioning\n\nBefore your app can run on a device or be submitted to the App Store, it must be code-signed. Code signing proves your identity as a developer and ensures the app hasn't been tampered with.\n\n### Development Certificates\n\nA **development certificate** is tied to your Apple Developer account and identifies you as a trusted developer. You generate a Certificate Signing Request (CSR) in Keychain Access, then create the certificate in the Apple Developer portal. Xcode can automate this via \"Automatically manage signing,\" but understanding the manual process is essential for advanced workflows.\n\n### Provisioning Profiles\n\nA **provisioning profile** bundles your certificate, App ID, and device UDIDs (for development) into a single file. There are four types:\n\n| Type | Purpose |\n|------|----------|\n| Development | Run on registered devices during development |\n| Ad Hoc | Distribute to registered devices for testing |\n| App Store | Submit to the App Store |\n| Enterprise | Distribute within an organization |\n\n### App IDs\n\nEvery app needs a unique **Bundle Identifier** (e.g., `com.example.MyApp`). Explicit App IDs enable specific services like Push Notifications, while Wildcard App IDs (`com.example.*`) match multiple apps but cannot use most services.\n\n### Key Points\n\n- Certificates expire (typically after 1 year for development, 5 years for distribution)\n- Private keys are stored in your Keychain — losing them means regenerating the certificate\n- Xcode's automatic signing handles most cases, but manual signing gives you full control over profiles and capabilities"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Signing Configuration",
+      "starterCode": "let bundleIdentifier = \"com.example.MyApp\"\nlet teamID = \"ABCDE12345\"\nlet signingType = \"automatic\"\n\nprint(\"Bundle ID: \\(bundleIdentifier)\")\nprint(\"Team: \\(teamID)\")\nprint(\"Signing: \\(signingType)\")\n\nlet profileTypes = [\"Development\", \"AdHoc\", \"AppStore\", \"Enterprise\"]\nprint(\"\\nProvisioning Profile Types:\")\nfor (index, type) in profileTypes.enumerated() {\n print(\"\\(index + 1). \\(type)\")\n}",
+      "expectedOutput": "Bundle ID: com.example.MyApp\nTeam: ABCDE12345\nSigning: automatic\n\nProvisioning Profile Types:\n1. Development\n2. AdHoc\n3. AppStore\n4. Enterprise",
+      "solution": "let bundleIdentifier = \"com.example.MyApp\"\nlet teamID = \"ABCDE12345\"\nlet signingType = \"automatic\"\n\nprint(\"Bundle ID: \\(bundleIdentifier)\")\nprint(\"Team: \\(teamID)\")\nprint(\"Signing: \\(signingType)\")\n\nlet profileTypes = [\"Development\", \"AdHoc\", \"AppStore\", \"Enterprise\"]\nprint(\"\\nProvisioning Profile Types:\")\nfor (index, type) in profileTypes.enumerated() {\n print(\"\\(index + 1). \\(type)\")\n}"
+    },
+    {
+      "type": "quiz",
+      "question": "What does a provisioning profile bundle together?",
+      "options": [
+        "Source code, assets, and storyboards",
+        "Certificate, App ID, and device identifiers",
+        "Xcode preferences, schemes, and targets",
+        "App Store metadata, screenshots, and descriptions"
+      ],
+      "correctIndex": 1,
+      "explanation": "A provisioning profile bundles your certificate, App ID, and device UDIDs into a single file that authorizes your app to run on specified devices or be distributed through the App Store."
+    },
+    {
+      "type": "text",
+      "content": "## Automatic vs. Manual Signing\n\nXcode offers two signing approaches:\n\n### Automatic Signing\n\nWhen you enable **\"Automatically manage signing\"** in Xcode, it creates and updates certificates and provisioning profiles for you. This works well for most solo developers and small teams. Xcode will:\n\n- Generate a development certificate if none exists\n- Create and update provisioning profiles when you change capabilities\n- Register new devices when you connect them\n\n### Manual Signing\n\nWith **manual signing**, you control exactly which certificate and profile are used for each build configuration. This is necessary when:\n\n- You need separate profiles for Debug, Release, and Profile configurations\n- Your CI/CD pipeline requires specific profile assignments\n- You're distributing an enterprise app\n- You need to share certificates across a team using a .p12 file\n\n### Best Practices\n\n- Store your .p12 private key and signing certificates securely — back them up\n- Use Xcode's \"Automatically manage signing\" for development; switch to manual for production\n- Keep your Apple Developer account's certificates and profiles page organized — delete expired profiles to avoid confusion"
+    },
+    {
+      "type": "quiz",
+      "question": "What happens if you lose the private key associated with your distribution certificate?",
+      "options": [
+        "Xcode will automatically regenerate it",
+        "You can continue signing with the public key alone",
+        "You must revoke the certificate and create a new one",
+        "The profile will automatically switch to automatic signing"
+      ],
+      "correctIndex": 2,
+      "explanation": "Without the private key stored in your Keychain, you cannot sign apps with that certificate. You must revoke the old certificate in the Developer portal and generate a new one along with new provisioning profiles."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

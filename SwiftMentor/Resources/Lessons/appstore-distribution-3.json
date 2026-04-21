@@ -1,0 +1,54 @@
+{
+  "id": "appstore-distribution-3",
+  "pathId": "appstore-distribution",
+  "title": "App Store Submission",
+  "description": "Navigate the App Store Connect submission process, from app metadata and screenshots to review guidelines and release strategies.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 40,
+  "order": 3,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## App Store Connect Setup\n\nApp Store Connect is the web portal where you manage every aspect of your app's presence on the App Store — from metadata and pricing to submissions and analytics.\n\n### Creating Your App Record\n\nBefore uploading a build, create an app record in App Store Connect:\n\n1. **App Name** — Must be unique and not already in use (30 character limit)\n2. **Primary Language** — The default language for your app listing\n3. **Bundle ID** — Must match the one in your Xcode project exactly\n4. **SKU** — An internal identifier for your own tracking (not visible to users)\n\n### App Metadata\n\nYour App Store listing includes several critical fields:\n\n- **Description** — Up to 4,000 characters explaining your app's value\n- **Keywords** — Up to 100 characters, comma-separated, for App Store search\n- **Screenshots** — Required for each supported device size\n- **App Icon** — 1024x1024 px, no alpha channel, no rounded corners (iOS adds them)\n- **Category** — Primary and secondary (e.g., Productivity, Business)\n- **Age Rating** — Determined by a questionnaire about content\n- **Privacy** — Privacy nutrition label declaring what data you collect\n\n### Pricing and Availability\n\nYou choose a **price tier** (from Free to Tier 1 and beyond). Apple handles currency conversion and regional pricing. You can also set introductory offers, subscriptions, and custom availability per country."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "App Metadata Checklist",
+      "starterCode": "struct AppStoreListing {\n let name: String\n let bundleID: String\n let version: String\n let description: String\n let keywords: [String]\n let priceTier: Int\n}\n\nlet myApp = AppStoreListing(\n name: \"SwiftMentor\",\n bundleID: \"com.example.SwiftMentor\",\n version: \"1.0.0\",\n description: \"Learn Swift interactively\",\n keywords: [\"swift\", \"coding\", \"tutorial\", \"programming\"],\n priceTier: 0\n)\n\nprint(\"App: \\(myApp.name)\")\nprint(\"Version: \\(myApp.version)\")\nprint(\"Bundle ID: \\(myApp.bundleID)\")\nprint(\"Price: \\(myApp.priceTier == 0 ? \"Free\" : \"Tier \\(myApp.priceTier)\")\")\nprint(\"Keywords: \\(myApp.keywords.joined(separator: \", \"))\")",
+      "expectedOutput": "App: SwiftMentor\nVersion: 1.0.0\nBundle ID: com.example.SwiftMentor\nPrice: Free\nKeywords: swift, coding, tutorial, programming",
+      "solution": "struct AppStoreListing {\n let name: String\n let bundleID: String\n let version: String\n let description: String\n let keywords: [String]\n let priceTier: Int\n}\n\nlet myApp = AppStoreListing(\n name: \"SwiftMentor\",\n bundleID: \"com.example.SwiftMentor\",\n version: \"1.0.0\",\n description: \"Learn Swift interactively\",\n keywords: [\"swift\", \"coding\", \"tutorial\", \"programming\"],\n priceTier: 0\n)\n\nprint(\"App: \\(myApp.name)\")\nprint(\"Version: \\(myApp.version)\")\nprint(\"Bundle ID: \\(myApp.bundleID)\")\nprint(\"Price: \\(myApp.priceTier == 0 ? \"Free\" : \"Tier \\(myApp.priceTier)\")\")\nprint(\"Keywords: \\(myApp.keywords.joined(separator: \", \"))\")"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the maximum length for an App Store app description?",
+      "options": [
+        "1,000 characters",
+        "2,000 characters",
+        "4,000 characters",
+        "10,000 characters"
+      ],
+      "correctIndex": 2,
+      "explanation": "App Store descriptions can contain up to 4,000 characters, giving you room to explain your app's features, use cases, and value proposition in detail."
+    },
+    {
+      "type": "text",
+      "content": "## Submission & Review\n\nOnce your app record and build are ready in App Store Connect, you submit for review.\n\n### The Submission Process\n\n1. **Upload your build** via Xcode (Product > Archive > Distribute App) or `xcrun altool`\n2. **Select the build** in App Store Connect after processing completes (usually 5–30 minutes)\n3. **Complete all required metadata** — missing fields prevent submission\n4. **Submit for review** — Apple's team evaluates your app\n\n### App Store Review Guidelines\n\nApple enforces the **App Store Review Guidelines** covering safety, performance, business, design, and legal requirements. Common rejection reasons include:\n\n- **Crashes and bugs** — App must be functional and stable\n- **Broken links** — All links (support, privacy policy) must work\n- **Placeholder content** — No \"Lorem ipsum\" or unfinished features\n- **Missing privacy policy** — Required if your app collects any data\n- **In-app purchase misuse** — Digital goods must use Apple's IAP system\n- **Misleading metadata** — Screenshots and description must match the app\n\n### Review Timeline\n\n- **Standard review**: 1–3 days for most apps\n- **Expedited review**: Available for urgent fixes (limited use)\n- **Rejection resolution**: Fix the issue, resubmit, and review typically takes less time\n\n### Release Options\n\nWhen your app is approved, you choose how to release:\n\n- **Manual Release** — You control the exact release date\n- **Automatic Release** — App goes live as soon as approved\n- **Phased Release** — Roll out over 7 days to increasing percentages (1%, 2%, 5%, 10%, 20%, 50%, 100%) to catch issues early"
+    },
+    {
+      "type": "quiz",
+      "question": "What does phased release do?",
+      "options": [
+        "Releases the app only to internal testers",
+        "Gradually rolls out the update to increasing percentages of users over 7 days",
+        "Submits the app for expedited review",
+        "Releases the app only in select countries"
+      ],
+      "correctIndex": 1,
+      "explanation": "Phased release gradually rolls out your app update to increasing percentages of users over 7 days (1%, 2%, 5%, 10%, 20%, 50%, 100%), letting you monitor for crashes and issues before reaching your full audience."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

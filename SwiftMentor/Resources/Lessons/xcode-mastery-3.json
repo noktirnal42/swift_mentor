@@ -1,0 +1,54 @@
+{
+  "id": "xcode-mastery-3",
+  "pathId": "xcode-mastery",
+  "title": "Build Settings & Distribution",
+  "description": "Understand Xcode build settings, schemes, targets, and configurations — then learn how to archive, export, and distribute your app via TestFlight and the App Store.",
+  "difficulty": "intermediate",
+  "estimatedMinutes": 30,
+  "order": 3,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Build Settings & Targets\n\nEvery Xcode project contains one or more **targets** — a target defines a single product to build, such as an app, a framework, or a test bundle. Each target has its own build settings that control how the source code is compiled, linked, and packaged.\n\n### Build Configurations\n\nXcode projects start with two build configurations by default:\n\n- **Debug** — Used during development. Compiler optimizations are disabled, debug symbols are included, and assertion checks are active.\n- **Release** — Used for shipping. Optimizations are enabled, debug symbols are stripped or exported as dSYMs, and assertions are removed.\n\nYou can add custom configurations like **Staging** or **QA** to support different server environments or feature flags.\n\n### Schemes\n\nA **scheme** tells Xcode which targets to build, what configuration to use, and what arguments to pass when running. You can have multiple schemes — one for the app, one for unit tests, and one for UI tests. Edit schemes via **Product > Scheme > Edit Scheme** (Cmd+<).\n\n### Key Build Settings\n\n- **SWIFT_VERSION** — The Swift language version\n- **IPHONEOS_DEPLOYMENT_TARGET** — Minimum iOS version supported\n- **PRODUCT_BUNDLE_IDENTIFIER** — Unique reverse-domain identifier\n- **INFOPLIST_FILE** — Path to the Info.plist\n- **CODE_SIGN_IDENTITY** — Certificate used for signing"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Reading Build Configuration at Runtime",
+      "starterCode": "#if DEBUG\nlet environment = \"Debug\"\n#else\nlet environment = \"Release\"\n#endif\n\nprint(\"Running in \\(environment) mode\")",
+      "expectedOutput": "Running in Debug mode",
+      "solution": "#if DEBUG\nlet environment = \"Debug\"\n#else\nlet environment = \"Release\"\n#endif\n\nprint(\"Running in \\(environment) mode\")"
+    },
+    {
+      "type": "text",
+      "content": "## Distribution\n\nOnce your app is ready, Xcode provides the tools to archive and distribute it.\n\n### Archiving\n\nUse **Product > Archive** to create a release build. Xcode organizes archives by date and version in the Organizer window (Window > Organizer). Each archive contains the compiled binary, dSYM files for crash symbolication, and the app's metadata.\n\n### Distribution Methods\n\n- **App Store Connect** — Upload your archive to App Store Connect for App Store or TestFlight distribution. Xcode validates your archive against App Store requirements before uploading.\n- **TestFlight** — Distribute beta builds to internal and external testers. External testers require App Store Connect review before receiving the build.\n- **Ad Hoc** — Install on registered devices (up to 100 per year per device in the provisioning profile). Useful for enterprise internal distribution.\n- **Development** — Install directly to your connected device for testing with a development certificate.\n- **Enterprise** — For organizations with an Apple Developer Enterprise Program membership, enabling in-house distribution outside the App Store.\n\n### App Thinning\n\nWhen distributing via the App Store, Xcode automatically performs app thinning: slicing (device-specific asset variants), bitcode (intermediate representation compiled on the server), and on-demand resources. This reduces the download size for each user's device."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "App Version Info",
+      "starterCode": "let marketingVersion = \"2.1.0\"\nlet buildNumber = 42\nlet bundleID = \"com.example.myapp\"\n\nprint(\"\\(bundleID) — v\\(marketingVersion) (\\(buildNumber))\")",
+      "expectedOutput": "com.example.myapp — v2.1.0 (42)",
+      "solution": "let marketingVersion = \"2.1.0\"\nlet buildNumber = 42\nlet bundleID = \"com.example.myapp\"\n\nprint(\"\\(bundleID) — v\\(marketingVersion) (\\(buildNumber))\")"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the purpose of the Release build configuration in Xcode?",
+      "options": ["To enable all debug assertions and symbols", "To disable compiler optimizations for faster builds", "To enable optimizations and strip debug symbols for shipping", "To generate unit test bundles automatically"],
+      "correctIndex": 2,
+      "explanation": "The Release configuration enables compiler optimizations and strips or exports debug symbols, producing a smaller, faster binary suitable for distribution."
+    },
+    {
+      "type": "quiz",
+      "question": "Which distribution method lets you send beta builds to external testers who must go through an App Store Connect review?",
+      "options": ["Ad Hoc", "Development", "Enterprise", "TestFlight"],
+      "correctIndex": 3,
+      "explanation": "TestFlight is Apple's beta distribution platform. External testers can receive builds, but those builds require a brief App Store Connect review before distribution."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": true,
+    "projectName": "BuildSettingsDistribution",
+    "projectType": "swift-cli"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "snippets": [
+    {
+      "id": "coreml-model",
+      "title": "Load CoreML Model",
+      "shortcut": "coremlmodel",
+      "topic": "coreml",
+      "description": "Load a CoreML model",
+      "code": "guard let model = try? ${1:ModelName}(configuration: MLModelConfiguration()) else {\n    return\n}\n\nlet input = ${1:ModelName}Input(${2:featureName}: ${3:value})\nlet output = try? model.prediction(input: input)",
+      "tags": ["coreml", "ml", "model"]
+    },
+    {
+      "id": "coreml-vision",
+      "title": "Vision Image Analysis",
+      "shortcut": "visionanalyze",
+      "topic": "coreml",
+      "description": "Analyze image with Vision framework",
+      "code": "let request = VNRecognizeTextRequest { request, error in\n    guard let observations = request.results as? [VNRecognizedTextObservation] else {\n        return\n    }\n    let texts = observations.compactMap { $0.topCandidates(1).first?.string }\n    print(texts)\n}\n\nlet handler = VNImageRequestHandler(cgImage: ${1:cgImage}, options: [:])\ntry? handler.perform([request])",
+      "tags": ["vision", "coreml", "ocr"]
+    },
+    {
+      "id": "coreml-nl",
+      "title": "Natural Language Analysis",
+      "shortcut": "nlanalyze",
+      "topic": "coreml",
+      "description": "Analyze text with NL framework",
+      "code": "import NaturalLanguage\n\nlet tagger = NLTagger(tagSchemes: [.nameType])\ntagger.string = ${1:\"Your text here\"}\n\nlet options: NLTagger.Options = [.omitWhitespace, .omitPunctuation]\ntagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .nameType, options: options) { tag, tokenRange in\n    if let tag = tag {\n        print(\"\\(text[tokenRange]): \\(tag)\")\n    }\n    return true\n}",
+      "tags": ["nl", "nlp", "coreml"]
+    }
+  ]
+}

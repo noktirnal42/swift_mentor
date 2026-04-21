@@ -1,0 +1,59 @@
+{
+  "id": "widgetkit-basics-2",
+  "pathId": "widgetkit-basics",
+  "title": "Timeline & Configuration",
+  "description": "Dive deeper into timeline management, reload policies, and how to create user-configurable widgets using IntentConfiguration with SiriKit custom intents.",
+  "difficulty": "intermediate",
+  "estimatedMinutes": 30,
+  "order": 2,
+  "sections": [
+    {
+      "type": "text",
+      "content": "A well-designed widget provides a timeline of entries so the system can flip through them without waking your extension repeatedly. Each TimelineEntry has a date property; the system renders the entry whose date is closest to the current time without being in the future. You control refresh cadence through the timeline's reload policy and through WidgetCenter.shared.reloadTimelines(ofKind:), which you can call from your main app when data changes. The system enforces a budget — roughly 40 to 70 reloads per day depending on the widget family — so you should batch updates into a single timeline rather than calling reload frequently. For widgets that need user customization (like choosing a city for a weather widget), use IntentConfiguration with a SiriKit Intent defined in an .intentdefinition file. The system presents an editing interface when the user long-presses the widget, and your IntentTimelineProvider receives the configured intent in every method call. Lock screen widgets use the same timeline model but support smaller families: accessoryCircular, accessoryRectangular, and accessoryInline."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Timeline with Reload Policy",
+      "starterCode": "import Foundation\n\nstruct WeatherEntry {\n    let date: Date\n    let temperature: Int\n    let condition: String\n}\n\n// Build a timeline of 4 hourly forecasts\n// Use .atEnd reload policy (simulated)\nfunc weatherTimeline() -> ([WeatherEntry], String) {\n    <#FILL#>\n}\n\nlet (entries, policy) = weatherTimeline()\nprint(\"Entries: \\(entries.count), Policy: \\(policy)\")",
+      "expectedOutput": "Entries: 4, Policy: atEnd",
+      "solution": "import Foundation\n\nstruct WeatherEntry {\n    let date: Date\n    let temperature: Int\n    let condition: String\n}\n\nfunc weatherTimeline() -> ([WeatherEntry], String) {\n    let now = Date()\n    let forecasts = [\n        (72, \"Sunny\"), (70, \"Partly Cloudy\"),\n        (68, \"Cloudy\"), (65, \"Rain\"\n    )]\n    let entries = forecasts.enumerated().map { (i, forecast) in\n        WeatherEntry(\n            date: now.addingTimeInterval(Double(i) * 3600),\n            temperature: forecast.0,\n            condition: forecast.1\n        )\n    }\n    return (entries, \"atEnd\")\n}\n\nlet (entries, policy) = weatherTimeline()\nprint(\"Entries: \\(entries.count), Policy: \\(policy)\")"
+    },
+    {
+      "type": "text",
+      "content": "User-configurable widgets rely on IntentConfiguration. You define a custom intent in Xcode's .intentdefinition file — for example, a CityIntent with a parameter for the city name. The generated intent class conforms to the INIntent protocol. Your provider then conforms to IntentTimelineProvider, which adds an intent parameter to each method. When the user configures the widget, the system stores their choice and passes it back to your provider on every timeline request. This is how a single widget extension can display different data for different configurations — you read intent.city to decide which location's weather to fetch. On iOS 17 and later, you can also use AppIntents with WidgetConfigurationIntent, which replaces SiriKit intents with a more Swift-native approach. The AppIntent-based configuration is declared with AppWidgetConfiguration, and the intent conforms to the WidgetConfigurationIntent protocol."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Intent-Based Configuration (Simulated)",
+      "starterCode": "import Foundation\n\nstruct CityConfig {\n    let cityName: String\n}\n\nstruct Forecast {\n    let city: String\n    let temp: Int\n}\n\nfunc fetchForecast(for config: CityConfig) -> Forecast {\n    // Return a forecast for the configured city\n    <#FILL#>\n}\n\nlet config = CityConfig(cityName: \"San Francisco\")\nlet forecast = fetchForecast(for: config)\nprint(\"\\(forecast.city): \\(forecast.temp)°F\")",
+      "expectedOutput": "San Francisco: 64°F",
+      "solution": "import Foundation\n\nstruct CityConfig {\n    let cityName: String\n}\n\nstruct Forecast {\n    let city: String\n    let temp: Int\n}\n\nfunc fetchForecast(for config: CityConfig) -> Forecast {\n    let temps: [String: Int] = [\n        \"San Francisco\": 64, \"New York\": 78, \"London\": 62\n    ]\n    let temp = temps[config.cityName] ?? 70\n    return Forecast(city: config.cityName, temp: temp)\n}\n\nlet config = CityConfig(cityName: \"San Francisco\")\nlet forecast = fetchForecast(for: config)\nprint(\"\\(forecast.city): \\(forecast.temp)°F\")"
+    },
+    {
+      "type": "quiz",
+      "question": "Approximately how many timeline reloads does the system budget per day for a typical widget?",
+      "options": [
+        "5 to 10",
+        "40 to 70",
+        "200 to 300",
+        "Unlimited — no budget exists"
+      ],
+      "correctIndex": 1,
+      "explanation": "The system enforces a daily budget of roughly 40 to 70 reloads depending on the widget family and how often the user views it. Exceeding the budget causes the system to throttle updates, so batching entries into a single timeline is critical."
+    },
+    {
+      "type": "quiz",
+      "question": "Which widget families are available for lock screen widgets on iOS?",
+      "options": [
+        "systemSmall, systemMedium, systemLarge",
+        "systemExtraLarge, systemLarge",
+        "accessoryCircular, accessoryRectangular, accessoryInline",
+        "lockScreenSmall, lockScreenLarge"
+      ],
+      "correctIndex": 2,
+      "explanation": "Lock screen widgets use the accessoryCircular, accessoryRectangular, and accessoryInline families. The systemSmall, systemMedium, and systemLarge families are for home screen widgets."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "advanced-swift-4",
+  "pathId": "advanced-swift",
+  "title": "Concurrency with async/await",
+  "description": "Write clean asynchronous code with Swift's modern concurrency features.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 60,
+  "order": 4,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Modern Swift Concurrency\n\nSwift's async/await provides a cleaner way to handle asynchronous operations.\n\n### Async Functions\n\n```swift\nfunc fetchUser(id: Int) async throws -> User {\n    let url = URL(string: \"https://api.example.com/users/\\(id)\")!\n    let (data, _) = try await URLSession.shared.data(from: url)\n    return try JSONDecoder().decode(User.self, from: data)\n}\n```\n\n### Calling Async Functions\n\n```swift\nTask {\n    do {\n        let user = try await fetchUser(id: 1)\n        print(\"Got user: \\(user.name)\")\n    } catch {\n        print(\"Error: \\(error)\")\n    }\n}\n```\n\n### Parallel Execution\n\n```swift\nasync let user = fetchUser(id: 1)\nasync let posts = fetchPosts(for: user)\n\nlet combined = try await [user, posts] // Runs in parallel\n```\n\n### Task Groups\n\n```swift\nfunc fetchAllUsers() async throws -> [User] {\n    try await withThrowingTaskGroup(of: User.self) { group in\n        for id in 1...10 {\n            group.addTask { try await fetchUser(id: id) }\n        }\n        var users: [User] = []\n        for try await user in group {\n            users.append(user)\n        }\n        return users\n    }\n}\n```"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Async/Await Demo",
+      "starterCode": "import Foundation\n\n// Simulated async functions\nfunc fetchUserName(id: Int) async -> String {\n    try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds\n    return \"User \\(id)\"\n}\n\nfunc fetchUserEmail(id: Int) async -> String {\n    try? await Task.sleep(nanoseconds: 100_000_000)\n    return \"user\\(id)@example.com\"\n}\n\n// Sequential execution\nTask {\n    print(\"Fetching user info sequentially...\")\n    let start = Date()\n    \n    let name = await fetchUserName(id: 1)\n    let email = await fetchUserEmail(id: 1)\n    \n    let time = Date().timeIntervalSince(start)\n    print(\"Name: \\(name)\")\n    print(\"Email: \\(email)\")\n    print(\"Time: \\(String(format: \"%.2f\", time))s\")\n    \n    // Now try parallel\n    print(\"\\nFetching user info in parallel...\")\n    let start2 = Date()\n    \n    async let nameParallel = fetchUserName(id: 1)\n    async let emailParallel = fetchUserEmail(id: 1)\n    \n    let (nameResult, emailResult) = await (nameParallel, emailParallel)\n    let time2 = Date().timeIntervalSince(start2)\n    \n    print(\"Name: \\(nameResult)\")\n    print(\"Email: \\(emailResult)\")\n    print(\"Time: \\(String(format: \"%.2f\", time2))s\")\n}",
+      "expectedOutput": "Fetching user info sequentially...\nName: User 1\nEmail: user1@example.com\nTime: ~0.20s\n\nFetching user info in parallel...\nName: User 1\nEmail: user1@example.com\nTime: ~0.10s",
+      "solution": "import Foundation\n\nfunc fetchUserName(id: Int) async -> String {\n    try? await Task.sleep(nanoseconds: 100_000_000)\n    return \"User \\(id)\"\n}\n\nasync let name = fetchUserName(id: 1)\nprint(await name)"
+    },
+    {
+      "type": "quiz",
+      "question": "What happens when you use 'async let' for two independent tasks?",
+      "options": ["They run sequentially", "They run in parallel", "Only the first runs", "An error occurs"],
+      "correctIndex": 1,
+      "explanation": "'async let' spawns both tasks concurrently, allowing them to run in parallel until awaited."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

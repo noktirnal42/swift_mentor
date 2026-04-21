@@ -1,0 +1,33 @@
+{
+  "id": "advanced-swift-2",
+  "pathId": "advanced-swift",
+  "title": "Generics",
+  "description": "Write flexible, reusable code with Swift's powerful generics system.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 50,
+  "order": 2,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Generics\n\nGenerics allow you to write flexible, reusable functions and types that work with any type.\n\n### Generic Functions\n\n```swift\nfunc swapTwoValues<T>(_ a: inout T, _ b: inout T) {\n    let temp = a\n    a = b\n    b = temp\n}\n\nvar x = 5\nvar y = 10\nswapTwoValues(&x, &y)  // Works with Int\n```\n\n### Generic Types\n\n```swift\nstruct Stack<Element> {\n    var items: [Element] = []\n    \n    mutating func push(_ item: Element) {\n        items.append(item)\n    }\n    \n    mutating func pop() -> Element {\n        return items.removeLast()\n    }\n}\n```\n\n### Type Constraints\n\n```swift\nfunc findIndex<T: Equatable>(of value: T, in array: [T]) -> Int? {\n    for (index, item) in array.enumerated() {\n        if item == value { return index }\n    }\n    return nil\n}\n```"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Generics Demo",
+      "starterCode": "import Foundation\n\n// Generic Stack\nstruct Stack<Element> {\n    private var items: [Element] = []\n    \n    mutating func push(_ item: Element) {\n        items.append(item)\n    }\n    \n    mutating func pop() -> Element? {\n        return items.popLast()\n    }\n    \n    var isEmpty: Bool { items.isEmpty }\n    var count: Int { items.count }\n}\n\n// Use the generic stack\nvar intStack = Stack<Int>()\nintStack.push(1)\nintStack.push(2)\nintStack.push(3)\n\nprint(\"Int stack count: \\(intStack.count)\")\nwhile let value = intStack.pop() {\n    print(\"Popped: \\(value)\")\n}\n\nvar stringStack = Stack<String>()\nstringStack.push(\"Hello\")\nstringStack.push(\"World\")\nprint(\"\\nString stack: \\(stringStack.count) items\")",
+      "expectedOutput": "Int stack count: 3\nPopped: 3\nPopped: 2\nPopped: 1\n\nString stack: 2 items",
+      "solution": "import Foundation\n\nstruct Stack<Element> {\n    private var items: [Element] = []\n    mutating func push(_ item: Element) { items.append(item) }\n    mutating func pop() -> Element? { items.popLast() }\n}\n\nvar stack = Stack<Int>()\nstack.push(1)\nstack.push(2)\nprint(stack.pop() ?? 0)"
+    },
+    {
+      "type": "quiz",
+      "question": "What symbol is used to indicate a generic type parameter in Swift?",
+      "options": ["< >", "[ ]", "( )", "{ }"],
+      "correctIndex": 0,
+      "explanation": "Angle brackets < > are used to define generic type parameters like <Element> or <T>."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

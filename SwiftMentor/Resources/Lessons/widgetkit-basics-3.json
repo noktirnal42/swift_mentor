@@ -1,0 +1,59 @@
+{
+  "id": "widgetkit-basics-3",
+  "pathId": "widgetkit-basics",
+  "title": "Interactive Widgets",
+  "description": "Learn how to add interactivity to widgets using App Intents, Button and Toggle actions, and the deep link patterns that let widget taps drive your app's behavior.",
+  "difficulty": "intermediate",
+  "estimatedMinutes": 30,
+  "order": 3,
+  "sections": [
+    {
+      "type": "text",
+      "content": "Starting in iOS 17, widgets support direct interactivity through App Intents. You can add Button and Toggle controls to your widget's SwiftUI view, and when the user taps them, the system runs the associated AppIntent in your widget extension's process — no need to open the app. A Button runs an intent that can perform work like toggling a flag, incrementing a counter, or starting a timer. A Toggle binds to a boolean and triggers an intent when flipped. The key is defining a struct that conforms to the Performable protocol (from AppIntents), implementing the perform() method, and attaching it to your view with the intent parameter. After the intent runs, call WidgetCenter.shared.reloadAllTimelines() to refresh the widget's display. This pattern is powerful for simple actions, but remember the widget extension runs in a sandboxed process with tight memory limits — keep your intent logic lightweight and avoid long-running tasks. For more complex workflows, use a Link or .widgetURL to deep-link into your main app, where you have full access to your data stack."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "AppIntent for Widget Interaction (Simulated)",
+      "starterCode": "import Foundation\n\n// Simulates an AppIntent that toggles a feature\nvar featureEnabled = false\n\nstruct ToggleFeatureIntent {\n    func perform() -> String {\n        <#FILL#>\n    }\n}\n\nlet intent = ToggleFeatureIntent()\nlet result = intent.perform()\nprint(result)",
+      "expectedOutput": "Feature is now enabled: true",
+      "solution": "import Foundation\n\nvar featureEnabled = false\n\nstruct ToggleFeatureIntent {\n    func perform() -> String {\n        featureEnabled.toggle()\n        return \"Feature is now enabled: \\(featureEnabled)\"\n    }\n}\n\nlet intent = ToggleFeatureIntent()\nlet result = intent.perform()\nprint(result)"
+    },
+    {
+      "type": "text",
+      "content": "Deep links remain essential for complex interactions. You attach a .widgetURL modifier to your widget's view, and when the user taps the widget, the system opens your app and passes the URL to your onOpenURL handler. In your main app, parse the URL's path or query items to navigate to the right screen. For example, a task-list widget might use widgetURL(URL(string: \"myapp://tasks/42\")), and the app's onOpenURL extracts the taskId to show that task's detail view. You can also place multiple Links inside a widget to create tappable zones — each Link opens a different URL in your app. On iOS 16 and earlier, all widget taps went through .widgetURL or Link; on iOS 17+, you choose between direct intent actions (for in-place state changes like toggles) and deep links (for navigation or heavy work). Combining both gives users the richest experience: a toggle to mark a task done right on the widget, and a tap on the task name to open the full detail in the app."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Deep Link Routing (Simulated)",
+      "starterCode": "import Foundation\n\nfunc handleDeepLink(_ url: String) -> String {\n    // Parse \"myapp://tasks/42\" and return \"Showing task 42\"\n    <#FILL#>\n}\n\nlet result = handleDeepLink(\"myapp://tasks/42\")\nprint(result)",
+      "expectedOutput": "Showing task 42",
+      "solution": "import Foundation\n\nfunc handleDeepLink(_ url: String) -> String {\n    let parts = url.components(separatedBy: \"/\")\n    let taskId = parts.last ?? \"unknown\"\n    return \"Showing task \\(taskId)\"\n}\n\nlet result = handleDeepLink(\"myapp://tasks/42\")\nprint(result)"
+    },
+    {
+      "type": "quiz",
+      "question": "In iOS 17+, which protocol should your intent struct conform to for interactive widget buttons?",
+      "options": [
+        "WidgetIntent",
+        "INIntent",
+        "AppIntent (Performable)",
+        "IntentHandling"
+      ],
+      "correctIndex": 2,
+      "explanation": "iOS 17 interactive widgets use the AppIntents framework. Your intent struct conforms to AppIntent and the Performable protocol, implementing the perform() method. INIntent is the older SiriKit-based approach used with IntentConfiguration."
+    },
+    {
+      "type": "quiz",
+      "question": "What should you call after an AppIntent modifies state to update the widget's displayed content?",
+      "options": [
+        "reloadTimelines(ofKind:)",
+        "WidgetCenter.shared.reloadAllTimelines()",
+        "invalidateContentView()",
+        "refreshWidget()"
+      ],
+      "correctIndex": 1,
+      "explanation": "After an AppIntent performs its work, you call WidgetCenter.shared.reloadAllTimelines() to ask the system to request new timeline entries, which refreshes the widget's display with the updated state."
+    }
+  ]
+}

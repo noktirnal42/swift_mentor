@@ -1,0 +1,38 @@
+{
+  "id": "metal-basics-2",
+  "pathId": "metal-basics",
+  "title": "Shaders 101",
+  "description": "Write your first Metal shaders using the Metal Shading Language.",
+  "difficulty": "advanced",
+  "estimatedMinutes": 50,
+  "order": 2,
+  "sections": [
+    {
+      "type": "text",
+      "content": "## Metal Shaders\n\nShaders are programs that run on the GPU. Metal uses the Metal Shading Language (MSL).\n\n### Types of Shaders\n\n- **Vertex Shader**: Transforms 3D coordinates to 2D screen space\n- **Fragment Shader**: Calculates the color of each pixel\n- **Compute Shader**: General-purpose GPU computation\n\n### Basic Vertex Shader\n\n```metal\nstruct VertexIn {\n    float3 position;\n    float4 color;\n};\n\nstruct VertexOut {\n    float4 position [[position]];\n    float4 color;\n};\n\nvertex VertexOut vertexShader(\n    const VertexIn *vertices [[buffer(0)]],\n    uint vertexID [[vertex_id]]\n) {\n    VertexOut out;\n    out.position = float4(vertices[vertexID].position, 1.0);\n    out.color = vertices[vertexID].color;\n    return out;\n}\n```\n\n### Basic Fragment Shader\n\n```metal\nfragment float4 fragmentShader(\n    VertexOut in [[stage_in]]\n) {\n    return in.color;\n}\n```\n\n### Sending Data to Shaders\n\n```swift\nlet buffer = device.makeBuffer(\n    bytes: vertices,\n    length: MemoryLayout<Vertex>.stride * vertexCount,\n    options: .storageModeShared\n)\n```"
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Shader Setup",
+      "starterCode": "import Foundation\nimport Metal\n\n// This example shows the structure of Metal shader code\nprint(\"Metal Shader Pipeline Structure:\\n\")\n\nlet shaderCode = \"\"\"\n// Vertex input structure\nstruct VertexIn {\n    float3 position;\n    float4 color;\n};\n\n// Vertex output / Fragment input\nstruct VertexOut {\n    float4 position [[position]];\n    float4 color;\n};\n\n// Vertex shader\nvertex VertexOut vertexShader(\n    const VertexIn *vertices [[buffer(0)]],\n    uint vertexID [[vertex_id]]\n) {\n    VertexOut out;\n    out.position = float4(vertices[vertexID].position, 1.0);\n    out.color = vertices[vertexID].color;\n    return out;\n}\n\n// Fragment shader\nfragment float4 fragmentShader(\n    VertexOut in [[stage_in]]\n) {\n    return in.color;\n}\n\"\"\"\n\nprint(shaderCode)\n\nprint(\"\\n--- Swift Setup ---\")\n\nlet setupCode = \"\"\"\n// Create Metal device\nlet device = MTLCreateSystemDefaultDevice()!\n\n// Create render pipeline\nlet descriptor = MTLRenderPipelineDescriptor()\ndescriptor.vertexFunction = device.makeFunction(name: \"vertexShader\")\ndescriptor.fragmentFunction = device.makeFunction(name: \"fragmentShader\")\ndescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm\n\nlet pipeline = try! device.makeRenderPipelineState(descriptor: descriptor)\n\"\"\"\n\nprint(setupCode)",
+      "expectedOutput": "Metal Shader Pipeline Structure:\n\n[Shader code listing]\n\n--- Swift Setup ---\n\n[Swift setup code listing]",
+      "solution": "import Foundation\nimport Metal\n\nlet device = MTLCreateSystemDefaultDevice()!\nprint(\"Using Metal device: \\(device.name)\")"
+    },
+    {
+      "type": "quiz",
+      "question": "What does the '[[position]]' attribute indicate in Metal?",
+      "options": [
+        "Pixel position on screen",
+        "Vertex position in 3D space",
+        "That the output is a fragment shader input",
+        "The shader stage"
+      ],
+      "correctIndex": 2,
+      "explanation": "'[[position]]' marks a vertex output as input to the fragment shader, defining the pixel's position."
+    }
+  ],
+  "xcodeProject": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,46 @@
+# Xcode
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# Build artifacts
+build/
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# XcodeGen
+*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# Release builds (DMGs go in GitHub Releases, not the repo)
+releases/
+release/
+*.dmg
+
+# Junk files
+=
+*~
+
+# IDE
+*.swp
+*.swo
+*~
+
+# Secrets
+*.env
+*.p12
+*.mobileprovision

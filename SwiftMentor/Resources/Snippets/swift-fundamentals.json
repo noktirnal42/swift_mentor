@@ -1,0 +1,76 @@
+{
+  "snippets": [
+    {
+      "id": "swift-for-in",
+      "title": "For-In Loop",
+      "shortcut": "forin",
+      "topic": "swift-fundamentals",
+      "description": "Iterate over a sequence",
+      "code": "for ${1:item} in ${2:collection} {\n    print(${1:item})\n}",
+      "tags": ["loop", "iteration", "for"]
+    },
+    {
+      "id": "swift-guard-let",
+      "title": "Guard Let Unwrap",
+      "shortcut": "guardlet",
+      "topic": "swift-fundamentals",
+      "description": "Safely unwrap optional with guard",
+      "code": "guard let ${1:value} = ${2:optional} else {\n    return\n}",
+      "tags": ["optional", "guard", "unwrap"]
+    },
+    {
+      "id": "swift-switch",
+      "title": "Switch Statement",
+      "shortcut": "switch",
+      "topic": "swift-fundamentals",
+      "description": "Match multiple conditions",
+      "code": "switch ${1:value} {\ncase ${2:pattern1}:\n    ${3:doSomething()}\ncase ${4:pattern2}:\n    ${5:doSomethingElse()}\ndefault:\n    ${6:handleDefault()}\n}",
+      "tags": ["control flow", "switch", "match"]
+    },
+    {
+      "id": "swift-func",
+      "title": "Function Definition",
+      "shortcut": "func",
+      "topic": "swift-fundamentals",
+      "description": "Define a function with parameters",
+      "code": "func ${1:functionName}(${2:param}: ${3:Type}) -> ${4:ReturnType} {\n    ${5:return value}\n}",
+      "tags": ["function", "method", "definition"]
+    },
+    {
+      "id": "swift-struct",
+      "title": "Struct Definition",
+      "shortcut": "struct",
+      "topic": "swift-fundamentals",
+      "description": "Define a Swift struct",
+      "code": "struct ${1:StructName} {\n    ${2:// Properties}\n    var ${3:name}: ${4:String}\n}",
+      "tags": ["struct", "type", "definition"]
+    },
+    {
+      "id": "swift-enum",
+      "title": "Enum Definition",
+      "shortcut": "enum",
+      "topic": "swift-fundamentals",
+      "description": "Define a Swift enum",
+      "code": "enum ${1:EnumName} {\n    case ${2:case1}\n    case ${3:case2}\n}",
+      "tags": ["enum", "type", "definition"]
+    },
+    {
+      "id": "swift-if-let",
+      "title": "If-Let Unwrap",
+      "shortcut": "iflet",
+      "topic": "swift-fundamentals",
+      "description": "Safely unwrap optional with if-let",
+      "code": "if let ${1:value} = ${2:optional} {\n    print(${1:value})\n}",
+      "tags": ["optional", "if-let", "unwrap"]
+    },
+    {
+      "id": "swift-closure",
+      "title": "Closure Expression",
+      "shortcut": "closure",
+      "topic": "swift-fundamentals",
+      "description": "Define a closure",
+      "code": "{ ${1:parameters} in\n    ${2:return value}\n}",
+      "tags": ["closure", "lambda", "function"]
+    }
+  ]
+}

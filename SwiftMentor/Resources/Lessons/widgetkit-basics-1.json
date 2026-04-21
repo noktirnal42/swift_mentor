@@ -1,0 +1,59 @@
+{
+  "id": "widgetkit-basics-1",
+  "pathId": "widgetkit-basics",
+  "title": "Widget Fundamentals",
+  "description": "Learn the core concepts of WidgetKit, including how widgets differ from apps, the widget lifecycle, and how to define a widget's static configuration with TimelineProvider and SwiftUI views.",
+  "difficulty": "intermediate",
+  "estimatedMinutes": 30,
+  "order": 1,
+  "sections": [
+    {
+      "type": "text",
+      "content": "WidgetKit lets you create home screen and lock screen widgets for iOS and macOS. A widget displays timely, relevant content from your app at a glance. Unlike a full app, a widget has no interactive controls — it renders a snapshot of your app's data using SwiftUI. The system controls when your widget appears and refreshes, so you must provide a TimelineProvider that tells the system both what to show now and what to show in the future. Every widget starts with a struct conforming to the Widget protocol. You define a kind (a unique string identifier), a configuration (either StaticConfiguration for single-purpose widgets or IntentConfiguration for user-configurable widgets), and the provider that supplies timeline entries. Each TimelineEntry carries a date and any data your widget view needs. The provider's getTimeline method returns an array of these entries, and the system renders the widget view for the current entry. On the lock screen, you use the accessorCircle or accessorRectangular widget families. Understanding this provider-and-entry model is the foundation of every widget you will build."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Widget Protocol & TimelineProvider",
+      "starterCode": "// Simulating a widget's provider and entry model\nstruct SimpleEntry {\n    let date: Date\n    let message: String\n}\n\nfunc provideEntry() -> SimpleEntry {\n    // Return an entry with today's date and a greeting\n    <#FILL#>\n}\n\nlet entry = provideEntry()\nprint(entry.message)",
+      "expectedOutput": "Hello from WidgetKit!",
+      "solution": "struct SimpleEntry {\n    let date: Date\n    let message: String\n}\n\nfunc provideEntry() -> SimpleEntry {\n    return SimpleEntry(date: Date(), message: \"Hello from WidgetKit!\")\n}\n\nlet entry = provideEntry()\nprint(entry.message)"
+    },
+    {
+      "type": "text",
+      "content": "In real WidgetKit code, your provider conforms to TimelineProvider with three required methods: placeholder(context:), which the system calls to show a generic placeholder while loading; getSnapshot(in:completion:), which provides a quick preview especially in the widget gallery; and getTimeline(in:completion:), which returns an array of TimelineEntry objects that tell the system what to render and when. A Timeline wraps those entries alongside a reload policy (.atEnd, .after, or .never). The .atEnd policy asks the system to request a new timeline after the last entry's date passes. The .after(date) policy requests a refresh at a specific future time. Choosing the right reload policy balances freshness with battery and performance budgets — the system enforces a daily budget for each widget, so fewer reloads mean your widget stays visible longer."
+    },
+    {
+      "type": "code",
+      "language": "swift",
+      "title": "Building a Timeline",
+      "starterCode": "import Foundation\n\nstruct WidgetEntry {\n    let date: Date\n    let value: Int\n}\n\n// Create 3 entries spaced 1 hour apart starting from now\nfunc buildTimeline() -> [WidgetEntry] {\n    <#FILL#>\n}\n\nlet timeline = buildTimeline()\nprint(timeline.count)",
+      "expectedOutput": "3",
+      "solution": "import Foundation\n\nstruct WidgetEntry {\n    let date: Date\n    let value: Int\n}\n\nfunc buildTimeline() -> [WidgetEntry] {\n    let now = Date()\n    return (0..<3).map { i in\n        WidgetEntry(date: now.addingTimeInterval(Double(i) * 3600), value: i)\n    }\n}\n\nlet timeline = buildTimeline()\nprint(timeline.count)"
+    },
+    {
+      "type": "quiz",
+      "question": "Which TimelineProvider method does the system call to display a generic placeholder while your widget is loading?",
+      "options": [
+        "getSnapshot(in:completion:)",
+        "placeholder(context:)",
+        "getTimeline(in:completion:)",
+        "reloadTimelines(ofKind:)"
+      ],
+      "correctIndex": 1,
+      "explanation": "The placeholder(context:) method provides a generic representation of your widget that the system displays while the real content is loading. getSnapshot is for the widget gallery preview, and getTimeline provides the full array of future entries."
+    },
+    {
+      "type": "quiz",
+      "question": "What does the .atEnd reload policy do?",
+      "options": [
+        "Reloads the widget immediately when the app launches",
+        "Reloads the widget at a fixed time every day",
+        "Requests a new timeline after the last entry's date passes",
+        "Prevents the widget from ever reloading"
+      ],
+      "correctIndex": 2,
+      "explanation": "The .atEnd policy tells the system to request a new timeline after the last entry's date has passed. This is the most common policy because it naturally chains timelines together."
+    }
+  ]
+}
