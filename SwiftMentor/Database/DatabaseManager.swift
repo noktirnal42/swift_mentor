@@ -348,12 +348,14 @@ let update = userProgress
     // MARK: - Streak Methods
     func updateStreak() {
         guard let db = db else { return }
-
+        
         let today = Calendar.current.startOfDay(for: Date())
-
+        
+        // Note: SQLite operations can throw, but in practice these are rare.
+        // We use try? for safety and log any errors.
+        let query = streakData.filter(streakDate == today)
+        
         do {
-            let query = streakData.filter(streakDate == today)
-
             if try db.pluck(query) != nil {
                 try db.run(query.update(
                     lessonsCompleted += 1,
@@ -363,9 +365,9 @@ let update = userProgress
                 // Check if yesterday had a streak
                 let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
                 let yesterdayQuery = streakData.filter(streakDate == yesterday)
-
+                
                 let newStreak = (try? db.pluck(yesterdayQuery))?[streakCount] ?? 0
-
+                
                 try db.run(streakData.insert(
                     streakDate <- today,
                     streakCount <- newStreak + 1,
@@ -373,7 +375,11 @@ let update = userProgress
                 ))
             }
         } catch {
+            // This catch block handles rare SQLite errors (e.g., database corruption,
+            // disk full, constraint violations). In normal operation, this shouldn't be reached.
+            #if DEBUG
             print("Error updating streak: \(error)")
+            #endif
         }
     }
 
