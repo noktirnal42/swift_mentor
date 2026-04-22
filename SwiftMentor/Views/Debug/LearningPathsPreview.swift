@@ -1,3 +1,4 @@
+#if DEBUG
 import SwiftUI
 import Foundation
 
@@ -48,3 +49,5 @@ struct LearningPathsPreview: View {
 #Preview {
     LearningPathsPreview()
 }
+
+#endif

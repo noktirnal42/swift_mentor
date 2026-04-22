@@ -1,3 +1,4 @@
+#if DEBUG
 import SwiftUI
 
 struct DebugContentView: View {
@@ -66,3 +67,5 @@ struct DebugContentView: View {
 #Preview {
     DebugContentView()
 }
+
+#endif
