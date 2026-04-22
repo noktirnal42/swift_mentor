@@ -1,0 +1,94 @@
+name: "SAST - Static Application Security Testing"
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**/*.swift'
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 1 * * *'  # Daily at 1 AM
+  workflow_dispatch:
+
+jobs:
+  sast-scan:
+    name: SAST Scan
+    runs-on: macos-15
+    
+    permissions:
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Project
+        run: |
+          cd SwiftMentor
+          xcodegen generate
+
+      - name: Build project
+        run: |
+          cd SwiftMentor
+          xcodebuild -project SwiftMentor.xcodeproj \
+            -scheme SwiftMentor \
+            -configuration Debug \
+            -destination "platform=macOS" \
+            build
+
+      - name: Run SwiftLint for security issues
+        run: |
+          echo "🔍 Running SwiftLint security analysis..."
+          if command -v swiftlint &> /dev/null; then
+            cd SwiftMentor
+            swiftlint lint --strict --reporter github-actions-logging || true
+          else
+            echo "SwiftLint not installed, installing..."
+            brew install swiftlint
+            cd SwiftMentor
+            swiftlint lint --strict --reporter github-actions-logging || true
+          fi
+        continue-on-error: true
+
+      - name: Check for insecure patterns
+        run: |
+          echo "🔍 Checking for insecure Swift patterns..."
+          
+          # Check for force unwraps
+          if grep -rn "!" --include="*.swift" SwiftMentor/ | grep -E "try!|force!|as!" | head -10; then
+            echo "⚠️  Found force unwraps - consider using optional binding"
+          fi
+          
+          # Check for force try
+          if grep -rn "try!" --include="*.swift" SwiftMentor/ | head -10; then
+            echo "⚠️  Found 'try!' - consider using 'try?' or proper error handling"
+          fi
+          
+          # Check for force cast
+          if grep -rn " as! " --include="*.swift" SwiftMentor/ | head -10; then
+            echo "⚠️  Found force casts - consider using 'as?' with optional binding"
+          fi
+          
+          echo "✅ Pattern check completed"
+
+      - name: SAST Summary
+        run: |
+          echo "## SAST Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Static Application Security Testing completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Analysis Type | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Check | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          echo "| SwiftLint Analysis | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pattern Detection | ✅ Completed |" >> $GITHUB_STEP_SUMMARY

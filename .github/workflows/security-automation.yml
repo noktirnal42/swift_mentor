@@ -1,0 +1,52 @@
+name: "Security Automation"
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request_target:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      scan_type:
+        description: 'Type of security scan to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - dependencies
+          - secrets
+          - codeql
+
+jobs:
+  auto-triage:
+    name: Auto Triage Security Issues
+    runs-on: ubuntu-lale
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'security')
+    
+    steps:
+      - name: Comment on security issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: '🔒 **Security Issue Detected**\n\nThis issue has been flagged as a security concern. Please do not discuss details publicly. A maintainer will review this shortly.\n\nIf this is a vulnerability, please follow our [Security Policy](../blob/main/SECURITY.md).'
+            });
+
+  security-scan:
+    name: Run Security Scan
+    runs-on: macos-15
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run requested scans
+        run: |
+          echo "Running security scan: ${{ github.event.inputs.scan_type || 'all' }}"
+          # Additional scan logic here

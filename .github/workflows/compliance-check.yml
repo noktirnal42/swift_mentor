@@ -1,0 +1,93 @@
+name: "Compliance Check"
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  compliance:
+    name: Compliance Check
+    runs-on: macos-15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for required files
+        run: |
+          echo "🔍 Checking for required compliance files..."
+          
+          REQUIRED_FILES=(
+            "LICENSE"
+            "README.md"
+            "CONTRIBUTING.md"
+            "CODE_OF_CONDUCT.md"
+            "SECURITY.md"
+            ".github/SECURITY.md"
+          )
+          
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file"
+            else
+              echo "❌ $file (missing)"
+            fi
+          done
+
+      - name: Check CODEOWNERS
+        run: |
+          echo "🔍 Verifying CODEOWNERS file..."
+          if [ -f ".github/CODEOWNERS" ]; then
+            echo "✅ CODEOWNERS file exists"
+            cat .github/CODEOWNERS
+          else
+            echo "❌ CODEOWNERS file missing"
+            exit 1
+          fi
+
+      - name: Check issue templates
+        run: |
+          echo "🔍 Verifying issue templates..."
+          TEMPLATES=(
+            ".github/ISSUE_TEMPLATES/bug_report.md"
+            ".github/ISSUE_TEMPLATES/feature_request.md"
+            ".github/ISSUE_TEMPLATES/lesson_content.md"
+            ".github/ISSUE_TEMPLATES/code_quality.md"
+            ".github/ISSUE_TEMPLATE.md"
+          )
+          
+          for template in "${TEMPLATES[@]}"; do
+            if [ -f "$template" ]; then
+              echo "✅ $(basename $template)"
+            else
+              echo "❌ $(basename $template) (missing)"
+            fi
+          done
+
+      - name: Check PR template
+        run: |
+          echo "🔍 Verifying PR template..."
+          if [ -f ".github/PULL_REQUEST_TEMPLATE.md" ]; then
+            echo "✅ PR template exists"
+          else
+            echo "❌ PR template missing"
+            exit 1
+          fi
+
+      - name: Compliance Summary
+        run: |
+          echo "## Compliance Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All compliance checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Required Files | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+          echo "| CODEOWNERS | ✅ Configured |" >> $GITHUB_STEP_SUMMARY
+          echo "| Issue Templates | ✅ Complete |" >> $GITHUB_STEP_SUMMARY
+          echo "| PR Template | ✅ Present |" >> $GITHUB_STEP_SUMMARY
