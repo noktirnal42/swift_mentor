@@ -15,17 +15,19 @@ on:
     - cron: '0 2 * * 1'  # Every Monday at 2 AM
   workflow_dispatch:
 
+# Permissions are required for CodeQL to upload SARIF results and comment on PRs
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  pull-requests: read
+
 jobs:
   analyze:
     name: Analyze Swift
     runs-on: macos-15
     timeout-minutes: 30
-
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
+    
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +35,7 @@ jobs:
         include:
           - language: swift
             query-suite: security-extended
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

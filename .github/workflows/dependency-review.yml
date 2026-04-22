@@ -4,8 +4,10 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Permissions for dependency review
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   dependency-review:
