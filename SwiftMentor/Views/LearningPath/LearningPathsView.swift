@@ -9,22 +9,23 @@ struct LearningPathsView: View {
     var body: some View {
         NavigationSplitView {
             pathList
-        } detail: {
-            if let lesson = currentLesson {
-                LessonDetailView(lesson: lesson)
-            } else if let path = selectedPath {
-                PathDetailView(path: path, onSelectLesson: { lesson in
-                    currentLesson = lesson
-                    appState.currentLesson = lesson
-                })
-            } else {
-                ContentUnavailableView(
-                    "Select a Path",
-                    systemImage: "book",
-                    description: Text("Choose a learning path from the sidebar")
-                )
-            }
+    } detail: {
+        if let lesson = currentLesson {
+            LessonDetailView(lesson: lesson)
+        } else if let path = selectedPath {
+            PathDetailView(path: path, onSelectLesson: { lesson in
+                currentLesson = lesson
+                appState.currentLesson = lesson
+            })
+            .id(path.id) // Force SwiftUI to recreate view when path changes
+        } else {
+            ContentUnavailableView(
+                "Select a Path",
+                systemImage: "book",
+                description: Text("Choose a learning path from the sidebar")
+            )
         }
+    }
         .navigationSplitViewStyle(.balanced)
         .navigationTitle("Learning Paths")
     }
@@ -67,7 +68,8 @@ struct PathDetailView: View {
     var onSelectLesson: ((Lesson) -> Void)?
     @State private var lessons: [Lesson] = []
     @State private var isLoading = true
-
+    @State private var lastLoadedPathId: String = ""
+    
     var body: some View {
         Group {
             if isLoading {
@@ -77,7 +79,7 @@ struct PathDetailView: View {
                     VStack(alignment: .leading, spacing: Theme.Spacing.md) {
                         // Path header
                         pathHeader
-                            .fadeIn()
+                        .fadeIn()
 
                         Divider()
 
@@ -85,8 +87,8 @@ struct PathDetailView: View {
                         LazyVStack(spacing: Theme.Spacing.sm) {
                             ForEach(Array(lessons.enumerated()), id: \.element.id) { index, lesson in
                                 GlassLessonRow(lesson: lesson, index: index, total: lessons.count)
-                                    .onTapGesture { onSelectLesson?(lesson) }
-                                    .fadeIn(delay: Double(index) * 0.05)
+                                .onTapGesture { onSelectLesson?(lesson) }
+                                .fadeIn(delay: Double(index) * 0.05)
                             }
                         }
                     }
@@ -95,7 +97,13 @@ struct PathDetailView: View {
             }
         }
         .navigationTitle(path.title)
-        .task { await loadLessons() }
+        .task(id: path.id) { await loadLessons() }
+        .onChange(of: path) { _, newPath in
+            // Reset state when path changes
+            lessons = []
+            isLoading = true
+            lastLoadedPathId = ""
+        }
     }
 
     private var pathHeader: some View {
@@ -130,11 +138,17 @@ struct PathDetailView: View {
     }
 
     private func loadLessons() async {
+        // Prevent duplicate loads
+        guard lastLoadedPathId != path.id else { return }
+        lastLoadedPathId = path.id
+        
         isLoading = true
+        lessons = [] // Clear previous lessons immediately
+        
         do {
             lessons = try await ContentService.shared.loadAllLessonsForPath(path.id)
         } catch {
-            print("Failed to load lessons: \(error)")
+            print("Failed to load lessons for path \(path.id): \(error)")
         }
         isLoading = false
     }

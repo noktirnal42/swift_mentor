@@ -1,8 +1,19 @@
+<div align="center">
+
 # SwiftMentor
 
-**The definitive all-in-one Apple development tutor for macOS.**
+### Master Apple Development. One Lesson at a Time.
 
-SwiftMentor is a native macOS application that teaches Apple development technologies through interactive lessons, a live Swift code playground, progress tracking, and AI-powered assistance. Built with SwiftUI, it features a polished glassmorphism UI and covers the full spectrum of Apple platforms and frameworks.
+[![Release](https://img.shields.io/github/v/release/noktirnal42/swift_mentor?color=007AFF&label=Latest%20Release)](https://github.com/noktirnal42/swift_mentor/releases/latest)
+[![Platform](https://img.shields.io/badge/platform-macOS%2015.4%2B-4ECDC4?logo=apple&logoColor=white)](https://www.apple.com/macos)
+[![License](https://img.shields.io/github/license/noktirnal42/swift_mentor?color=9B5DE5)](LICENSE)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fnoktirnal42.github.io%2Fswift_mentor%2F&label=Website&color=FF6B35)](https://noktirnal42.github.io/swift_mentor/)
+
+The definitive all-in-one Apple development tutor for macOS. Learn Swift, SwiftUI, Metal, CoreML, and more — with interactive lessons, a live code playground, and progress tracking. Built with SwiftUI and a stunning glassmorphism UI.
+
+[⬇ Download](https://github.com/noktirnal42/swift_mentor/releases/latest) · [🌐 Website](https://noktirnal42.github.io/swift_mentor/) · [📖 Wiki](https://github.com/noktirnal42/swift_mentor/wiki) · [🐛 Report Bug](https://github.com/noktirnal42/swift_mentor/issues/new) · [💡 Request Feature](https://github.com/noktirnal42/swift_mentor/discussions)
+
+</div>
 
 ---
 
@@ -56,23 +67,33 @@ SwiftMentor is a native macOS application that teaches Apple development technol
 
 ---
 
+## Download
+
+Get the latest release from the [Releases page](https://github.com/noktirnal42/swift_mentor/releases/latest):
+
+- **SwiftMentor-1.2.0.dmg** (5.5 MB) — Ready-to-use macOS disk image
+
+> **Note:** Since the app is not code-signed with a Developer ID, macOS Gatekeeper will warn on first launch. Right-click the app → Open → Open to bypass.
+
+---
+
 ## Building from Source
 
 1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/noktirnal42/swift_mentor.git
-   cd swift_mentor/SwiftMentor
-   ```
+```bash
+git clone https://github.com/noktirnal42/swift_mentor.git
+cd swift_mentor/SwiftMentor
+```
 
 2. **Generate the Xcode project:**
-   ```bash
-   xcodegen generate
-   ```
+```bash
+xcodegen generate
+```
 
 3. **Open in Xcode:**
-   ```bash
-   open SwiftMentor.xcodeproj
-   ```
+```bash
+open SwiftMentor.xcodeproj
+```
 
 4. **Build & Run** (⌘R)
 
@@ -86,53 +107,53 @@ SwiftMentor follows the **MVVM** (Model-View-ViewModel) pattern:
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌──────────────┐
-│   Views/     │────▶│   ViewModels/    │────▶│  Services/   │
-│  (SwiftUI)   │     │  (Observable)    │     │  (Business)  │
+│   Views/    │────▶│   ViewModels/    │────▶│  Services/   │
+│  (SwiftUI)  │     │  (Observable)    │     │  (Business)  │
 └─────────────┘     └──────────────────┘     └──────┬───────┘
-                                                     │
-                    ┌──────────────────┐     ┌───────▼───────┐
-                    │   Resources/     │     │   Database/   │
-                    │  (JSON Content)  │     │  (SQLite)     │
-                    └──────────────────┘     └───────────────┘
+                                                      │
+                       ┌──────────────────┐     ┌─────▼───────┐
+                       │   Resources/     │     │  Database/  │
+                       │ (JSON Content)   │     │  (SQLite)   │
+                       └──────────────────┘     └─────────────┘
 ```
 
 ### Directory Structure
 
 ```
 SwiftMentor/
-├── App/                          # App lifecycle (AppDelegate, main)
-├── Models/                       # Data models (LearningPath, Lesson, UserProgress)
-├── ViewModels/                   # Observable view models (AppState, DashboardVM, etc.)
+├── App/                    # App lifecycle (AppDelegate, main)
+├── Models/                 # Data models (LearningPath, Lesson, UserProgress)
+├── ViewModels/             # Observable view models (AppState, DashboardVM, etc.)
 ├── Views/
-│   ├── MainWindow/               # Content/Sidebar layout
-│   ├── Dashboard/                # Home screen "Command Center"
-│   ├── LearningPath/             # Path listing and navigation
-│   ├── Lesson/                   # Lesson detail, quizzes
-│   ├── Playground/               # Code editor + execution
-│   ├── Progress/                 # Stats, trophies, activity
-│   ├── Settings/                 # App preferences
-│   ├── Help/                     # Onboarding flow
-│   ├── AIAssistant/              # AI chat panel
-│   ├── Snippets/                 # Code snippet library
-│   ├── Components/               # Shared UI components (GlassEffects, etc.)
-│   └── Debug/                    # Debug/preview views
-├── Services/                     # Business logic
-│   ├── ContentService.swift      # JSON content loading + fallbacks
-│   ├── CodeExecutionService.swift# Swift interpreter execution
-│   ├── SyntaxHighlightingService # Splash-powered syntax coloring
-│   ├── AutocompleteService.swift # Code completion suggestions
-│   ├── ProgressService.swift     # Progress persistence (SQLite)
-│   ├── AIService.swift           # AI assistant integration
-│   ├── PreviewService.swift      # Xcode project generation
-│   └── ProjectGeneratorService   # Scaffold Xcode projects from lessons
+│   ├── MainWindow/         # Content/Sidebar layout
+│   ├── Dashboard/          # Home screen "Command Center"
+│   ├── LearningPath/       # Path listing and navigation
+│   ├── Lesson/             # Lesson detail, quizzes
+│   ├── Playground/         # Code editor + execution
+│   ├── Progress/           # Stats, trophies, activity
+│   ├── Settings/           # App preferences
+│   ├── Help/               # Onboarding flow
+│   ├── AIAssistant/        # AI chat panel
+│   ├── Snippets/           # Code snippet library
+│   ├── Components/         # Shared UI components (GlassEffects, etc.)
+│   └── Debug/              # Debug/preview views
+├── Services/               # Business logic
+│   ├── ContentService      # JSON content loading + fallbacks
+│   ├── CodeExecutionService# Swift interpreter execution
+│   ├── SyntaxHighlighting  # Splash-powered syntax coloring
+│   ├── AutocompleteService # Code completion suggestions
+│   ├── ProgressService     # Progress persistence (SQLite)
+│   ├── AIService           # AI assistant integration
+│   ├── PreviewService      # Xcode project generation
+│   └── ProjectGenerator    # Scaffold Xcode projects from lessons
 ├── Database/
-│   └── DatabaseManager.swift     # SQLite.swift schema + CRUD
-├── Extensions/                   # SwiftUI/AppKit helpers
+│   └── DatabaseManager     # SQLite.swift schema + CRUD
+├── Extensions/             # SwiftUI/AppKit helpers
 ├── Resources/
-│   ├── LearningPaths/paths.json  # Path definitions
-│   ├── Lessons/*.json            # 36 lesson content files
-│   ├── Snippets/*.json           # Code snippet collections
-│   └── Assets.xcassets           # App icon + colors
+│   ├── LearningPaths/      # Path definitions (paths.json)
+│   ├── Lessons/            # 36 lesson content files
+│   ├── Snippets/           # Code snippet collections
+│   └── Assets.xcassets     # App icon + colors
 └── Supporting/
     ├── Info.plist
     └── SwiftMentor.entitlements  # Sandbox disabled for Process execution
@@ -173,6 +194,22 @@ Both are resolved via Swift Package Manager automatically.
 
 ---
 
+## Documentation
+
+| Resource | Link |
+|----------|------|
+| 🌐 **Website** | [noktirnal42.github.io/swift_mentor](https://noktirnal42.github.io/swift_mentor/) |
+| 📖 **Wiki** | [GitHub Wiki](https://github.com/noktirnal42/swift_mentor/wiki) |
+| 🏗️ **Architecture** | [Architecture.md](https://github.com/noktirnal42/swift_mentor/wiki/Architecture) |
+| 🎨 **Brand Guide** | [Brand-Guide.md](https://github.com/noktirnal42/swift_mentor/wiki/Brand-Guide) |
+| 📋 **Lesson Schema** | [Lesson-Schema.md](https://github.com/noktirnal42/swift_mentor/wiki/Lesson-Schema) |
+| 🔧 **Technical Notes** | [Technical-Notes.md](https://github.com/noktirnal42/swift_mentor/wiki/Technical-Notes) |
+| 🗺️ **Roadmap** | [Roadmap.md](https://github.com/noktirnal42/swift_mentor/wiki/Roadmap) |
+| ❓ **FAQ** | [FAQ.md](https://github.com/noktirnal42/swift_mentor/wiki/FAQ) |
+| 📝 **Changelog** | [Changelog.md](https://github.com/noktirnal42/swift_mentor/wiki/Changelog) |
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute lessons, fix bugs, or add features.
@@ -185,8 +222,16 @@ See the [GitHub Issues](https://github.com/noktirnal42/swift_mentor/issues) page
 
 - **#1** — SMCodeEditor still uses SwiftUI `TextEditor` (smart quotes leak through)
 - **#6** — Splash `Theme.wwdc18()` static methods invisible under explicit module builds
-- **#7** — AI Assistant panel is UI-only (no backend connected)
-- **#8** — No dark/light mode toggle (always dark)
+- **#5** — AI Assistant panel is UI-only (no backend connected)
+- **#4** — No dark/light mode toggle (always dark)
+
+---
+
+## Brand
+
+SwiftMentor's brand reflects the intersection of **Apple's design philosophy** and **educational empowerment**. For the complete brand identity — colors, typography, voice & tone, visual language, and asset guidelines — see the [Brand Guide](https://github.com/noktirnal42/swift_mentor/wiki/Brand-Guide).
+
+**Primary Colors:** Mentor Blue `#007AFF` · Deep Indigo `#5856D6` · Solar Orange `#FF6B35` · Hot Pink `#F72585` · Mint Teal `#4ECDC4` · Electric Purple `#9B5DE5`
 
 ---
 
