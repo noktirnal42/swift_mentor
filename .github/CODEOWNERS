@@ -1,0 +1,21 @@
+# Code Owners for SwiftMentor
+# https://help.github.com/articles/about-codeowners/
+
+# Default owners for the entire repository
+*    @noktirnal42
+
+# Core application code
+/SwiftMentor/    @noktirnal42
+
+# Resources and lesson content
+/SwiftMentor/Resources/    @noktirnal42
+
+# Documentation
+/docs/    @noktirnal42
+*.md    @noktirnal42
+
+# GitHub workflows and configuration
+.github/    @noktirnal42
+
+# Project configuration
+project.yml    @noktirnal42
