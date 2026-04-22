@@ -66,39 +66,37 @@ struct SMCodeEditor: View {
                         .background(Color(nsColor: .controlBackgroundColor))
                 }
 
-                // Code Editor
-                ZStack(alignment: .topLeading) {
-                    // Background
-                    Color(nsColor: NSColor(red: 0.12, green: 0.12, blue: 0.12, alpha: 1.0))
-
-                    // Text Content
-                    ScrollView(.vertical, showsIndicators: true) {
-                        TextEditor(text: $code)
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(.white)
-                            .scrollContentBackground(.hidden)
-                            .background(Color.clear)
-                            .frame(minHeight: 300)
-                            .onChange(of: code) { _, newValue in
-                                updateLineCount()
-                                cursorPosition = newValue.count
-                                if isEditable && !isHighlighting {
-                                    Task { await highlightCode() }
-                                }
-                            }
-                    }
-
-                    // Error Highlights
-                    ForEach(errors) { error in
-                        errorHighlightView(for: error)
-                    }
-
-                    // Autocomplete Popup
-                    if showAutocomplete && !completions.isEmpty && !code.isEmpty {
-                        autocompletePopup
-                            .offset(x: 60, y: 50 + scrollOffset)
-                    }
-                }
+        // Code Editor
+        ZStack(alignment: .topLeading) {
+          // Background
+          Color(nsColor: NSColor(red: 0.12, green: 0.12, blue: 0.12, alpha: 1.0))
+          
+          // Text Content - Use PlainTextEditor to avoid smart quotes
+          ScrollView(.vertical, showsIndicators: true) {
+            PlainTextEditorWrapper(
+              code: $code,
+              cursorPosition: $cursorPosition,
+              updateLineCount: updateLineCount,
+              isHighlighting: $isHighlighting,
+              highlightCode: { Task { await highlightCode() } }
+            )
+            .font(.system(.body, design: .monospaced))
+            .foregroundColor(.white)
+            .background(Color.clear)
+            .frame(minHeight: 300)
+          }
+          
+          // Error Highlights
+          ForEach(errors) { error in
+            errorHighlightView(for: error)
+          }
+          
+          // Autocomplete Popup
+          if showAutocomplete && !completions.isEmpty && !code.isEmpty {
+            autocompletePopup
+            .offset(x: 60, y: 50 + scrollOffset)
+          }
+        }
             }
         }
         .background(Color(nsColor: NSColor(red: 0.12, green: 0.12, blue: 0.12, alpha: 1.0)))
@@ -257,23 +255,115 @@ struct SMCodeEditor: View {
     }
 }
 
+// MARK: - PlainTextEditorWrapper
+// Wrapper to integrate PlainTextEditor with SMCodeEditor's bindings
+
+struct PlainTextEditorWrapper: NSViewRepresentable {
+  @Binding var code: String
+  @Binding var cursorPosition: Int
+  let updateLineCount: () -> Void
+  @Binding var isHighlighting: Bool
+  let highlightCode: () -> Void
+  
+  func makeCoordinator() -> Coordinator {
+    Coordinator(self)
+  }
+  
+  func makeNSView(context: Context) -> NSScrollView {
+    let scrollView = NSTextView.scrollableTextView()
+    let textView = scrollView.documentView as! NSTextView
+    
+    // Disable ALL automatic text substitutions that break code
+    textView.isAutomaticQuoteSubstitutionEnabled = false
+    textView.isAutomaticDashSubstitutionEnabled = false
+    textView.isAutomaticTextReplacementEnabled = false
+    textView.isAutomaticSpellingCorrectionEnabled = false
+    textView.isAutomaticDataDetectionEnabled = false
+    textView.isAutomaticLinkDetectionEnabled = false
+    textView.isContinuousSpellCheckingEnabled = false
+    textView.isGrammarCheckingEnabled = false
+    
+    // Make it a plain text editor (not rich text)
+    textView.isRichText = false
+    textView.usesFindBar = true
+    textView.isSelectable = true
+    textView.isEditable = true
+    textView.allowsUndo = true
+    textView.drawsBackground = false
+    textView.textColor = NSColor.white
+    textView.insertionPointColor = NSColor.white
+    
+    // Set font
+    textView.font = NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
+    
+    // Content
+    textView.string = code
+    textView.delegate = context.coordinator
+    
+    // Store reference in coordinator
+    context.coordinator.textView = textView
+    
+    return scrollView
+  }
+  
+  func updateNSView(_ scrollView: NSScrollView, context: Context) {
+    guard let textView = scrollView.documentView as? NSTextView else { return }
+    if textView.string != code {
+      let selectedRange = textView.selectedRange()
+      textView.string = code
+      if selectedRange.location <= textView.string.count {
+        textView.setSelectedRange(selectedRange)
+      }
+    }
+  }
+}
+
+// MARK: - PlainTextEditorWrapper Coordinator
+
+extension PlainTextEditorWrapper {
+  class Coordinator: NSObject, NSTextViewDelegate {
+    var parent: PlainTextEditorWrapper
+    weak var textView: NSTextView?
+    private var highlightTimer: Timer?
+    
+    init(_ parent: PlainTextEditorWrapper) {
+      self.parent = parent
+    }
+    
+    func textDidChange(_ notification: Notification) {
+      guard let textView = notification.object as? NSTextView else { return }
+      let newString = textView.string
+      parent.code = newString
+      parent.cursorPosition = newString.count
+      parent.updateLineCount()
+      
+      // Debounce syntax highlighting
+      highlightTimer?.invalidate()
+      highlightTimer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { [weak self] _ in
+        guard self?.parent.isHighlighting == false else { return }
+        self?.parent.highlightCode()
+      }
+    }
+  }
+}
+
 // MARK: - Preview
 
 #Preview("SMCodeEditor") {
-    SMCodeEditor(
-        code: .constant("func greet(name: String) -> String {\n    return \"Hello, \\(name)!\"\n}\n\nprint(greet(name: \"World\"))"),
-        cursorPosition: .constant(50),
-        isEditable: true,
-        language: "swift",
-        showLineNumbers: true,
-        showAutocomplete: true,
-        completions: [
-            AutocompleteCompletion(text: "print", type: .keyword, detail: "Print to console"),
-            AutocompleteCompletion(text: "String", type: .type, detail: "Swift String type")
-        ],
-        onCompletionSelect: { _ in },
-        onRunCode: {},
-        onErrorHighlight: { _ in }
-    )
-    .frame(width: 600, height: 400)
+  SMCodeEditor(
+    code: .constant("func greet(name: String) -> String {\n return \"Hello, \\(name)!\"\n}\n\nprint(greet(name: \"World\"))"),
+    cursorPosition: .constant(50),
+    isEditable: true,
+    language: "swift",
+    showLineNumbers: true,
+    showAutocomplete: true,
+    completions: [
+      AutocompleteCompletion(text: "print", type: .keyword, detail: "Print to console"),
+      AutocompleteCompletion(text: "String", type: .type, detail: "Swift String type")
+    ],
+    onCompletionSelect: { _ in },
+    onRunCode: {},
+    onErrorHighlight: { _ in }
+  )
+  .frame(width: 600, height: 400)
 }
