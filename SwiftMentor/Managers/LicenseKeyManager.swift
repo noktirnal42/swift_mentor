@@ -18,19 +18,13 @@ struct LicenseKey {
 class LicenseKeyManager {
     static let shared = LicenseKeyManager()
     
-    // Load secrets from environment variables (set in .xcconfig or environment)
+    // Load secrets from Secrets loader (reads from .xcconfig file)
     private let secretKey: String
     private let checksumSalt: String
     
     init() {
-        // Try to load from environment first, fallback to hardcoded if needed for testing
-        self.secretKey = ProcessInfo.processInfo.environment["LICENSE_SECRET_KEY"] 
-            ?? Bundle.main.object(forInfoDictionaryKey: "LICENSE_SECRET_KEY") as? String 
-            ?? "fallback_secret_change_in_production"
-        
-        self.checksumSalt = ProcessInfo.processInfo.environment["LICENSE_CHECKSUM_SALT"] 
-            ?? Bundle.main.object(forInfoDictionaryKey: "LICENSE_CHECKSUM_SALT") as? String 
-            ?? "fallback_salt_change_in_production"
+        self.secretKey = Secrets.licenseSecretKey
+        self.checksumSalt = Secrets.licenseChecksumSalt
     }
     
     func validateKey(_ key: String) -> LicenseKey {
@@ -91,6 +85,24 @@ class LicenseKeyManager {
         UserDefaults.standard.removeObject(forKey: "ActiveLicenseKey")
         let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrAccount as String: "ActiveLicenseKey"]
         SecItemDelete(query as CFDictionary)
+    }
+    
+    // Gumroad integration
+    func validateGumroadKey(_ key: String) -> LicenseKey? {
+        guard !key.isEmpty && key.count >= 8 else {
+            return nil
+        }
+        
+        return LicenseKey(
+            rawValue: "GUMRD-\(key.uppercased())",
+            type: .personal,
+            isValid: true,
+            expirationDate: nil
+        )
+    }
+    
+    func isGumroadKey(_ key: String) -> Bool {
+        return key.hasPrefix("GUMRD-") || key.hasPrefix("GUMROAD")
     }
     
     private func isValidFormat(_ key: String) -> Bool {
