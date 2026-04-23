@@ -48,7 +48,6 @@
 		6F3CF4E5B7C829E74DCE1E7B /* TrialExpirationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7E90F736EC197EAF7C4DD5 /* TrialExpirationView.swift */; };
 		730C470A7FFC7405CC05E1F0 /* advanced-swift-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 735F9CADBAA4292B19A70B70 /* advanced-swift-2.json */; };
 		759FC63DE4EE2EB00D8E4E8E /* Secrets.xcconfig.template in Resources */ = {isa = PBXBuildFile; fileRef = ECF718AD7743F2FE44877445 /* Secrets.xcconfig.template */; };
-		773B110403EFFA7E47B5654F /* LicenseKeyManager+Gumroad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016F4BB4C65455AF4815B8AD /* LicenseKeyManager+Gumroad.swift */; };
 		7D27987A1C28A274567499C6 /* coreml-intro-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 6121B3FFD28AA3EC4D4F50BC /* coreml-intro-1.json */; };
 		809988C9E7245B7752DB12B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87CC775969CB5D85E9EC6DF7 /* Assets.xcassets */; };
 		8319E113C793CE88C87EF5AF /* swift-fundamentals-3.json in Resources */ = {isa = PBXBuildFile; fileRef = 68A35F6BADB6A4DCEFB2120B /* swift-fundamentals-3.json */; };
@@ -107,7 +106,6 @@
 
 /* Begin PBXFileReference section */
 		00F8084E201467ECAAFD0960 /* AutocompleteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteService.swift; sourceTree = "<group>"; };
-		016F4BB4C65455AF4815B8AD /* LicenseKeyManager+Gumroad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LicenseKeyManager+Gumroad.swift"; sourceTree = "<group>"; };
 		02C4340CC1BC4C1E9F2BED67 /* LessonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailView.swift; sourceTree = "<group>"; };
 		06F5560172FDD67E8EC6F006 /* swiftdata-essentials-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "swiftdata-essentials-2.json"; sourceTree = "<group>"; };
 		07921B8D78F915497BCC696A /* swiftdata-essentials-3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "swiftdata-essentials-3.json"; sourceTree = "<group>"; };
@@ -239,7 +237,6 @@
 			isa = PBXGroup;
 			children = (
 				69105F1447777B2B79E6789A /* LicenseKeyManager.swift */,
-				016F4BB4C65455AF4815B8AD /* LicenseKeyManager+Gumroad.swift */,
 				B8B1900B0EC6B079B11CDCFF /* TrialManager.swift */,
 			);
 			path = Managers;
@@ -673,7 +670,6 @@
 				2ADBA9837585CD9E6167A20B /* LearningPathsView.swift in Sources */,
 				1AE87387156801C0236CCB7C /* Lesson.swift in Sources */,
 				C5F52AD274763E48AC97DFDB /* LessonDetailView.swift in Sources */,
-				773B110403EFFA7E47B5654F /* LicenseKeyManager+Gumroad.swift in Sources */,
 				98B4289DA207D47958D58C6D /* LicenseKeyManager.swift in Sources */,
 				E6988D4A1ECD9618448B4B2D /* OnboardingView.swift in Sources */,
 				28B9E9EC02FE1F5C93198104 /* PreviewService.swift in Sources */,

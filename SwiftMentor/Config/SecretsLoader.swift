@@ -69,7 +69,7 @@ struct Secrets {
                 let valuePart = String(parts[1]).trimmingCharacters(in: .whitespaces)
                 
                 if keyPart == key {
-                    return valuePart
+                    return valuePart.isEmpty ? nil : valuePart
                 }
             }
         }
