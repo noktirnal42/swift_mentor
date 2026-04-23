@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
@@ -38,7 +39,10 @@ struct ContentView: View {
     
     private func checkTrialStatus() {
         // Check if trial has expired and no valid license
-        if TrialManager.shared.isTrialExpired() && !LicenseKeyManager.shared.hasValidLicense() {
+        let trialManager = TrialManager.shared
+        let licenseManager = LicenseKeyManager.shared
+        
+        if trialManager.isTrialExpired() && !licenseManager.hasValidLicense() {
             showPurchaseDialog = true
             trialExpired = true
         }

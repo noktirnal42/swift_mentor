@@ -1,4 +1,5 @@
 name: SwiftMentor
+
 options:
   bundleIdPrefix: com.swiftmentor
   deploymentTarget:
@@ -7,20 +8,20 @@ options:
   generateEmptyDirectories: true
   groupSortPosition: top
 
-  settings:
-    base:
-      PRODUCT_NAME: SwiftMentor
-      MARKETING_VERSION: "1.2.0"
-      CURRENT_PROJECT_VERSION: "3"
-      SWIFT_VERSION: "5.9"
-      MACOSX_DEPLOYMENT_TARGET: "15.4"
-      CODE_SIGN_IDENTITY: "-"
-      CODE_SIGN_STYLE: Manual
-      DEVELOPMENT_TEAM: ""
-      ENABLE_HARDENED_RUNTIME: YES
-      HARDENED_RUNTIME_CAPABILITY_INHERIT: NO
-      COMBINE_HIDPI_IMAGES: YES
-      SWIFT_COMPILATION_MODE: wholemodule
+settings:
+  base:
+    PRODUCT_NAME: SwiftMentor
+    MARKETING_VERSION: "1.2.0"
+    CURRENT_PROJECT_VERSION: "3"
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "15.4"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: YES
+    HARDENED_RUNTIME_CAPABILITY_INHERIT: NO
+    COMBINE_HIDPI_IMAGES: YES
+    SWIFT_COMPILATION_MODE: wholemodule
 
 packages:
   SQLite:
@@ -42,6 +43,8 @@ targets:
       - path: Services
       - path: Database
       - path: Extensions
+      - path: Managers
+      - path: Config
       - path: Resources/Assets.xcassets
         buildPhase: resources
       - path: Resources/Lessons
@@ -63,9 +66,6 @@ targets:
         EXPLICIT_MODULE_BUILD: NO
         SWIFT_ENABLE_EXPLICIT_MODULES: NO
         CLANG_ENABLE_EXPLICIT_MODULES: NO
-    dependencies:
-      - package: SQLite
-      - package: Splash
     entitlements:
       path: Supporting/SwiftMentor.entitlements
       properties:
