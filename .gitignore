@@ -44,3 +44,16 @@ release/
 *.env
 *.p12
 *.mobileprovision
+
+# Secret configuration - NEVER commit these!
+*.xcconfig
+!*.xcconfig.template
+.env
+.env.local
+.env.*.local
+*.key
+*.secret
+*.private
+Config/Secrets.xcconfig
+Config/*.xcconfig
+!Config/*.xcconfig.template

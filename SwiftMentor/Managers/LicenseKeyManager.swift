@@ -17,8 +17,21 @@ struct LicenseKey {
 
 class LicenseKeyManager {
     static let shared = LicenseKeyManager()
-    private let secretKey = "SwiftMentor2026Secret"
-    private let checksumSalt = "SwiftMentorSalt2026"
+    
+    // Load secrets from environment variables (set in .xcconfig or environment)
+    private let secretKey: String
+    private let checksumSalt: String
+    
+    init() {
+        // Try to load from environment first, fallback to hardcoded if needed for testing
+        self.secretKey = ProcessInfo.processInfo.environment["LICENSE_SECRET_KEY"] 
+            ?? Bundle.main.object(forInfoDictionaryKey: "LICENSE_SECRET_KEY") as? String 
+            ?? "fallback_secret_change_in_production"
+        
+        self.checksumSalt = ProcessInfo.processInfo.environment["LICENSE_CHECKSUM_SALT"] 
+            ?? Bundle.main.object(forInfoDictionaryKey: "LICENSE_CHECKSUM_SALT") as? String 
+            ?? "fallback_salt_change_in_production"
+    }
     
     func validateKey(_ key: String) -> LicenseKey {
         guard isValidFormat(key) else {
