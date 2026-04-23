@@ -5,14 +5,27 @@ import Foundation
 struct Secrets {
     private static let configPath: String = {
         // Look for Secrets.xcconfig in the app bundle or local directory
-        let paths = [
+        let possiblePaths: [String?] = [
             Bundle.main.path(forResource: "Secrets", ofType: "xcconfig"),
-            Bundle.main.resourcePath.map { "\($0)/Secrets.xcconfig" },
-            "\(Bundle.main.resourcePath)/../Config/Secrets.xcconfig",
-            "\(Bundle.main.bundlePath)/../Config/Secrets.xcconfig"
-        ].compactMap { $0 }
+            Bundle.main.resourcePath.map { path in
+                return "\(path)/Secrets.xcconfig"
+            },
+            Bundle.main.resourcePath.map { path in
+                return "\(path)/../Config/Secrets.xcconfig"
+            },
+            Bundle.main.bundlePath.map { path in
+                return "\(path)/../Config/Secrets.xcconfig"
+            }
+        ]
         
-        return paths.first ?? ""
+        // Return first non-nil path
+        for optionalPath in possiblePaths {
+            if let path = optionalPath {
+                return path
+            }
+        }
+        
+        return ""
     }()
     
     /// Load LemonSqueezy API key
@@ -45,7 +58,7 @@ struct Secrets {
     
     /// Helper to parse .xcconfig file
     private static func loadValue(forKey key: String) -> String? {
-        guard FileManager.default.fileExists(atPath: configPath) else {
+        guard !configPath.isEmpty, FileManager.default.fileExists(atPath: configPath) else {
             return nil
         }
         
