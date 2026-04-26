@@ -1,59 +1,17 @@
-# Xcode
-*.xcodeproj/project.xcworkspace/xcuserdata/
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
-*.xcuserstate
-*.xcscmblueprint
-*.xccheckout
+# ================================================================
+# SwiftMentor Public Repository .gitignore
+# ================================================================
+# This repository should ONLY contain public documentation.
+# All source code, build artifacts, and internal docs are excluded.
+# ================================================================
 
-# Build artifacts
-build/
-DerivedData/
+# Keep everything by default
+*
 
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-.Spotlight-V100
-.Trashes
-
-# Swift Package Manager
-.build/
-.swiftpm/
-Package.resolved
-
-# XcodeGen
-*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-
-# Release builds (DMGs go in GitHub Releases, not the repo)
-releases/
-release/
-*.dmg
-
-# Junk files
-=
-*~
-
-# IDE
-*.swp
-*.swo
-*~
-
-# Secrets
-*.env
-*.p12
-*.mobileprovision
-
-# Secret configuration - NEVER commit these!
-*.xcconfig
-!*.xcconfig.template
-.env
-.env.local
-.env.*.local
-*.key
-*.secret
-*.private
-Config/Secrets.xcconfig
-Config/*.xcconfig
-!Config/*.xcconfig.template
+# Except these public files
+!README.md
+!LICENSE.md
+!CODE_OF_CONDUCT.md
+!CONTRIBUTING.md
+!.github/
+!.gitignore
